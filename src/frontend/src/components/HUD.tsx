@@ -56,23 +56,23 @@ export function HUD({ balanceCents }: HUDProps) {
       {/* Top left: level + XP */}
       <div className="hud-panel absolute left-3 top-3 w-56 p-3">
         <div className="flex items-baseline justify-between">
-          <span className="text-sm font-bold tracking-wide">Level {level}</span>
+          <span className="text-sm font-bold tracking-wide">等级 {level}</span>
           <span className="text-[11px] text-white/60">
-            {Math.floor(inLevel)} / {need} XP
+            {Math.floor(inLevel)} / {need} 经验
           </span>
         </div>
         <div className="mt-1.5">
           <Bar value={inLevel} max={need} color="#7fe3a0" />
         </div>
         <div className="mt-2 flex items-center justify-between gap-2 text-[12px]">
-          <span className="text-emerald-300">{st.recyclePoints} points</span>
+          <span className="text-emerald-300">{st.recyclePoints} 积分</span>
           {balanceCents !== null && (
             <span className="font-semibold tabular-nums text-white/85">
               {formatCents(balanceCents)}
             </span>
           )}
           <span className="text-white/60">
-            {Math.round(cleaned * 100)}% clean
+            {Math.round(cleaned * 100)}% 已清理
           </span>
         </div>
       </div>
@@ -89,7 +89,7 @@ export function HUD({ balanceCents }: HUDProps) {
       <div className="hud-panel absolute bottom-3 left-3 w-52 space-y-2 p-3 text-[12px]">
         <div>
           <div className="mb-1 flex justify-between">
-            <span>Bucket</span>
+            <span>桶</span>
             <span
               className={
                 st.bucketCount >= bucketCap
@@ -104,7 +104,7 @@ export function HUD({ balanceCents }: HUDProps) {
         </div>
         <div>
           <div className="mb-1 flex justify-between">
-            <span>Jeep</span>
+            <span>吉普车</span>
             <span
               className={
                 st.jeepCount >= jeepCap
@@ -119,15 +119,15 @@ export function HUD({ balanceCents }: HUDProps) {
         </div>
         {st.stationStored > 0 && (
           <div className="text-white/55">
-            At the station: {st.stationStored}
+            回收站：{st.stationStored} 件
           </div>
         )}
         {/* Equipped hand tool – only once the detector is owned */}
         {!st.inJeep && (st.upgrades.detector ?? 0) >= 1 && (
           <div className="flex justify-between text-white/55">
-            <span>Tool</span>
+            <span>工具</span>
             <span className="text-white/80">
-              {st.tool === "detector" ? "Metal detector" : "Litter picker"}
+              {st.tool === "detector" ? "金属探测器" : "拾物夹"}
             </span>
           </div>
         )}

@@ -21,9 +21,9 @@ const REFRESH_MS = 20_000;
 type MarketView = "swap" | "book" | "prices";
 
 const VIEWS: ReadonlyArray<readonly [MarketView, string]> = [
-  ["swap", "Swap"],
-  ["book", "Order book"],
-  ["prices", "Prices"],
+  ["swap", "兑换"],
+  ["book", "挂单簿"],
+  ["prices", "价格"],
 ];
 
 export function MarketTab({ market }: MarketTabProps) {
@@ -45,7 +45,7 @@ export function MarketTab({ market }: MarketTabProps) {
       <Panel className="px-4 py-3" tone={offline ? "warn" : "plain"}>
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <div className="ts-label">Balance</div>
+            <div className="ts-label">余额</div>
             <div className="ts-display mt-1 text-[30px] tracking-normal text-white">
               {offline ? EM_DASH : formatCents(market.balanceCents ?? 0)}
             </div>
@@ -53,7 +53,7 @@ export function MarketTab({ market }: MarketTabProps) {
           <div className="flex items-center gap-2">
             {market.busy && (
               <span className="ts-mono text-[11px] text-white/45">
-                Syncing …
+                同步中…
               </span>
             )}
             <button
@@ -62,14 +62,13 @@ export function MarketTab({ market }: MarketTabProps) {
               disabled={market.busy}
               className="rounded-lg bg-white/10 px-3 py-1.5 text-[12px] font-medium transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Refresh
+              刷新
             </button>
           </div>
         </div>
         {offline && (
           <p className="mt-2 text-[12px] leading-relaxed text-amber-200/85">
-            Offline — sign in to trade. You can still see your materials; swaps,
-            orders and wholesale sales need a connection.
+            离线——登录后才能交易。你仍可查看材料；兑换、挂单和批发销售需要联网。
           </p>
         )}
         {!offline && market.error && (

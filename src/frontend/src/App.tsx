@@ -84,10 +84,12 @@ export default function App() {
       {screen === "start" ? (
         <StartScreen
           isAuthenticated={sync.isAuthenticated}
+          isGuest={sync.isGuest}
           isLoggingIn={sync.isLoggingIn}
           authInitializing={sync.authInitializing}
           loginError={sync.loginError}
           onLogin={sync.login}
+          onGuest={sync.loginGuest}
           onLogout={sync.logout}
           profile={sync.profile}
           profileChecking={sync.profileChecking}
@@ -98,7 +100,7 @@ export default function App() {
           registerBusy={sync.registerBusy}
           registerOutcome={sync.registerOutcome}
           checkNameAvailable={sync.checkNameAvailable}
-          hasSave={sync.profile?.hasSave === true}
+          hasSave={sync.profile?.hasSave === true || sync.hasLocalSave}
           onContinue={sync.loadProfileIntoGame}
           onNewRun={sync.startFreshRun}
           loadBusy={sync.loadBusy}
@@ -115,10 +117,10 @@ export default function App() {
             <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 bg-[#06202e]">
               <div className="h-10 w-10 animate-spin rounded-full border-4 border-cyan-300/30 border-t-cyan-300" />
               <div className="text-sm font-semibold tracking-wide text-cyan-100/90">
-                Preparing the beach …
+                正在准备海滩…
               </div>
               <div className="text-xs text-white/50">
-                {bootStep ? `Building ${bootStep}` : "Starting up the waves"}
+                {bootStep ? `正在建造${bootStep}` : "正在启动海浪"}
               </div>
             </div>
           )}
@@ -126,7 +128,7 @@ export default function App() {
             <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#06202e] p-6">
               <div className="w-full max-w-lg rounded-2xl border border-amber-400/40 bg-[#0b2a3a] p-5 shadow-2xl">
                 <div className="mb-2 text-lg font-bold text-amber-300">
-                  The game could not start
+                  游戏无法启动
                 </div>
                 <pre className="scroll-thin mb-4 max-h-52 select-text overflow-auto whitespace-pre-wrap rounded-lg bg-black/40 p-3 text-[11px] leading-snug text-amber-100">
                   {engineError}
@@ -137,14 +139,14 @@ export default function App() {
                     onClick={() => window.location.reload()}
                     className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-[#04222e] hover:bg-cyan-400"
                   >
-                    Reload
+                    重新加载
                   </button>
                   <button
                     type="button"
                     onClick={toMainMenu}
                     className="rounded-xl bg-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/20"
                   >
-                    Back to start
+                    返回开始界面
                   </button>
                 </div>
               </div>
@@ -174,10 +176,10 @@ export default function App() {
           {/* Cloud status, discreetly in the bottom right */}
           {!paused && !menuOpen && (
             <div className="pointer-events-none absolute bottom-1.5 right-2 text-[10px] text-white/40">
-              {cloudStatus === "online" && "Profile saved"}
-              {cloudStatus === "sync" && "Saving …"}
-              {cloudStatus === "error" && "Save failed"}
-              {cloudStatus === "offline" && "Not signed in"}
+              {cloudStatus === "online" && "已保存资料"}
+              {cloudStatus === "sync" && "保存中…"}
+              {cloudStatus === "error" && "保存失败"}
+              {cloudStatus === "offline" && "未登录"}
             </div>
           )}
         </>

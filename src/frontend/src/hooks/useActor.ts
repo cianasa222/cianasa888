@@ -15,14 +15,17 @@ export function useActor<T>(createActor: createActorFunction<T>): {
   actor: T | null;
   isFetching: boolean;
 } {
-  const { identity, isAuthenticated, isInitializing } = useInternetIdentity();
+  const { identity, isAuthenticated, isInitializing, isGuest } =
+    useInternetIdentity();
   const queryClient = useQueryClient();
 
   const actorQuery = useQuery({
     queryKey: [ACTOR_QUERY_KEY, identity?.getPrincipal().toString() ?? "anon"],
     // Only start once the session state is settled – otherwise an anonymous
     // actor would briefly be created and thrown away again right after.
-    enabled: !isInitializing,
+    // Guests never get an actor: there is no backend reachable from here,
+    // so creating one would only fail.
+    enabled: !isInitializing && !isGuest,
     staleTime: Number.POSITIVE_INFINITY,
     queryFn: async (): Promise<T> => {
       if (isAuthenticated && identity) {
@@ -46,7 +49,7 @@ export function useActor<T>(createActor: createActorFunction<T>): {
   }, [actorQuery.data, queryClient]);
 
   return {
-    actor: actorQuery.data ?? null,
-    isFetching: actorQuery.isFetching,
+    actor: isGuest ? null : (actorQuery.data ?? null),
+    isFetching: isGuest ? false : actorQuery.isFetching,
   };
 }

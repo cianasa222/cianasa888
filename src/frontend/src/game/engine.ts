@@ -155,7 +155,7 @@ export class Game {
     };
     const st = useGame.getState();
 
-    await step("the coast");
+    await step("海岸");
     const rng = mulberry32(st.seed ^ 0x5eed);
     this.world = new World(this.scene, q);
     this.env = new Environment(
@@ -171,13 +171,13 @@ export class Game {
     // trash field places items onto – so they must exist first.
     await this.places.build(q, step);
 
-    await step("the trash");
+    await step("垃圾");
     const savedRemaining =
       Object.keys(st.remaining).length > 0 ? st.remaining : null;
     this.trash = new TrashField(this.scene, st.seed, savedRemaining);
     useGame.getState().registerWorld(this.trash.initialCountsByKey());
 
-    await step("the station");
+    await step("回收站");
     this.player = new Player(
       this.scene,
       this.world,
@@ -193,10 +193,10 @@ export class Game {
     this.jeep = new Jeep(this.scene, STATION_POS.x - 20, STATION_POS.z - 12);
     this.station = new Station(this.scene);
 
-    await step("the wreck and the camp");
+    await step("沉船与营地");
     this.landmarks = new Landmarks(this.scene, q);
 
-    await step("the wildlife");
+    await step("野生动物");
     this.companions = new Companions(this.scene, this.trash);
     this.birds = new Birds(this.scene, q);
     this.fox = new Fox(this.scene, q);
@@ -209,7 +209,7 @@ export class Game {
     this.ships = new HorizonTraffic(this.scene, q);
     this.detector = new Detector(this.scene, q);
 
-    await step("the light");
+    await step("灯光");
     this.input = new InputManager(canvas, {
       onLook: (dx, dy) => this.player.addLook(dx, dy),
       onAction: (a) => this.handleAction(a),
@@ -405,7 +405,7 @@ export class Game {
     const st = useGame.getState();
     if (st.inJeep || st.tool === t) return;
     if (t === "detector" && (st.upgrades.detector ?? 0) < 1) {
-      st.toast("No detector yet – the marketplace sells one.", "info");
+      st.toast("还没有探测器——市场上有售。", "info");
       return;
     }
     st.setTool(t);
@@ -423,7 +423,7 @@ export class Game {
     }
     if (st.bucketCount >= st.bucketCapacity()) {
       sound.bucketFull();
-      st.toast("Your bucket is full! Empty it into the jeep (F).", "warn");
+      st.toast("你的桶满了！倒进吉普车（F）。", "warn");
       return;
     }
     const ti = pick.typeIdx;
@@ -448,7 +448,7 @@ export class Game {
           sound.pickupSound(def.category);
           useGame
             .getState()
-            .float(`+10 XP · ${def.name}`, CATEGORIES[def.category].color);
+            .float(`+10 经验 · ${def.name}`, CATEGORIES[def.category].color);
         }
       },
     );
@@ -510,17 +510,17 @@ export class Game {
       const dep = this.station.deposit();
       if (dep.count > 0) {
         st.toast(
-          `${dep.count} items dropped off · +${dep.points} points`,
+          `${dep.count} 件物品已交货 · +${dep.points} 积分`,
           "good",
         );
       } else {
-        st.toast("The station is full – wait for it to process.", "warn");
+        st.toast("回收站满了——等它处理完。", "warn");
       }
       return;
     }
     if (!st.inJeep && this.jeep.canEnter(this.player.position)) {
       if (st.bucketCount === 0) {
-        st.toast("Your bucket is empty.", "info");
+        st.toast("你的桶是空的。", "info");
         return;
       }
       const catsBefore = new Set(
@@ -532,9 +532,9 @@ export class Game {
       const n = st.transferBucketToJeep();
       if (n > 0) {
         sound.dumpCascade([...catsBefore]);
-        st.toast(`${n} items loaded into the jeep`, "good");
+        st.toast(`${n} 件物品已装上吉普车`, "good");
       } else {
-        st.toast("The flatbed is full!", "warn");
+        st.toast("货厢满了！", "warn");
       }
     }
   }
@@ -667,8 +667,8 @@ export class Game {
         const cat = CATEGORIES[pick.def.category].name;
         grab = true;
         prompt = st.isTouch
-          ? `${pick.def.name} (${cat}) – Tap Grab`
-          : `${pick.def.name} (${cat}) – Click to pick up`;
+          ? `${pick.def.name}（${cat}）——点“抓取”`
+          : `${pick.def.name}（${cat}）——点击拾取`;
       }
       // Rare finds: only offered while no piece of trash is in the crosshair.
       const find = pick
@@ -682,8 +682,8 @@ export class Game {
       if (find) {
         grab = true;
         prompt = st.isTouch
-          ? `Rare find: ${find.name} – Tap Grab`
-          : `Rare find: ${find.name} – Click to pick up`;
+          ? `稀有发现：${find.name}——点“抓取”`
+          : `稀有发现：${find.name}——点击拾取`;
       }
     } else {
       this.currentPick = null;
@@ -711,19 +711,19 @@ export class Game {
     const extra: string[] = [];
     if (this.lightAct)
       extra.push(
-        key(`F: ${this.lightAct.prompt}`, `Use: ${this.lightAct.prompt}`),
+        key(`F：${this.lightAct.prompt}`, `使用：${this.lightAct.prompt}`),
       );
     if (this.detAct)
-      extra.push(key(`F: ${this.detAct.prompt}`, `Use: ${this.detAct.prompt}`));
+      extra.push(key(`F：${this.detAct.prompt}`, `使用：${this.detAct.prompt}`));
     if (nearStation && (st.bucketCount > 0 || st.jeepCount > 0))
       extra.push(
-        key("F: Drop off at the station", "Use: drop off at the station"),
+        key("F：在回收站交货", "使用：在回收站交货"),
       );
-    if (st.inJeep) extra.push(key("E: Get out", "Exit: get out"));
+    if (st.inJeep) extra.push(key("E：下车", "下车"));
     else if (nearJeep) {
-      extra.push(key("E: Get in the jeep", "Enter: get in the jeep"));
+      extra.push(key("E：上吉普车", "上车"));
       if (st.bucketCount > 0 && !nearStation)
-        extra.push(key("F: Empty bucket into the jeep", "Use: empty bucket"));
+        extra.push(key("F：把桶倒进吉普车", "使用：倒空桶"));
     }
     if (extra.length > 0)
       prompt =
@@ -785,7 +785,7 @@ export class Game {
         for (const k of Object.keys(counts)) st.incRemaining(k, counts[k]);
         if (keys.length > 0) {
           sound.washUp();
-          st.toast("The tide has washed up new trash!", "info");
+          st.toast("潮汐冲上了新的垃圾！", "info");
         }
       }
     }

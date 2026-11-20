@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 /** Thousands separators, British formatting like everywhere else in the UI. */
 export function num(v: number): string {
-  return new Intl.NumberFormat("en-GB").format(Math.round(v));
+  return new Intl.NumberFormat("zh-CN").format(Math.round(v));
 }
 
 /** Framed surface – the carrier for every section inside the menu. */
@@ -187,7 +187,7 @@ export function Stepper({
         disabled={disabled || value >= max}
         onClick={() => onChange(max)}
       >
-        Max
+        全部
       </button>
     </div>
   );

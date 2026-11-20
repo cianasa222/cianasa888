@@ -242,7 +242,7 @@ export function SwapView({ market }: SwapViewProps) {
     // Escrow: the material leaves the store before the call, so a failed swap
     // can never spend it twice. It goes straight back if the call is refused.
     if (sellId && !st.takeMaterials(sellId, amountIn)) {
-      toast("Not enough material in store.", "warn");
+      toast("仓库里的材料不够。", "warn");
       return;
     }
     setSubmitting(true);
@@ -251,7 +251,7 @@ export function SwapView({ market }: SwapViewProps) {
     setSubmitting(false);
     if (!res.ok) {
       if (sellId) useGame.getState().addMaterials(sellId, amountIn);
-      toast(res.error ?? "The swap did not go through.", "warn");
+      toast(res.error ?? "兑换未成功。", "warn");
       return;
     }
     const receipt = res.swap;
@@ -259,7 +259,7 @@ export function SwapView({ market }: SwapViewProps) {
     const got = receipt?.amountOut ?? quote.amountOut;
     if (isMaterialId(buyAsset)) useGame.getState().addMaterials(buyAsset, got);
     toast(
-      `Swapped ${formatAssetAmount(sellAsset, paid)} → ${formatAssetAmount(buyAsset, got)}`,
+      `已兑换 ${formatAssetAmount(sellAsset, paid)} → ${formatAssetAmount(buyAsset, got)}`,
       "good",
     );
     setAmountText("");
@@ -267,20 +267,20 @@ export function SwapView({ market }: SwapViewProps) {
   }, [quote, amountIn, sellAsset, buyAsset, slippageBp, doSwap]);
 
   // Button ladder – offline first, then the reasons the player can act on.
-  let label = "Swap";
+  let label = "兑换";
   let spinner = false;
-  if (offline) label = "Sign in to trade";
+  if (offline) label = "登录后交易";
   else if (submitting) {
-    label = "Swapping …";
+    label = "兑换中…";
     spinner = true;
-  } else if (amountIn <= 0) label = "Enter an amount";
+  } else if (amountIn <= 0) label = "输入数量";
   else if (insufficient)
     label = isMaterialId(sellAsset)
-      ? `Insufficient ${MATERIALS[sellAsset].name}`
-      : "Insufficient balance";
-  else if (tooLarge) label = "Too large for this market";
-  else if (quoting) label = "Fetching a quote …";
-  else if (!quote) label = quoteError ?? "No quote available";
+      ? `${MATERIALS[sellAsset].name}不足`
+      : "余额不足";
+  else if (tooLarge) label = "超出本市场上限";
+  else if (quoting) label = "正在获取报价…";
+  else if (!quote) label = quoteError ?? "暂无报价";
 
   const sellOptions: SwapAsset[] = [USD_ASSET, ...owned];
   const impact = quote?.priceImpactBp ?? 0;
@@ -289,18 +289,18 @@ export function SwapView({ market }: SwapViewProps) {
     <div className="space-y-3">
       <Panel className="p-3">
         <div className="mb-2.5 flex items-center justify-between gap-3 px-1">
-          <div className="ts-display text-[20px] tracking-normal">Swap</div>
+          <div className="ts-display text-[20px] tracking-normal">兑换</div>
           <span className="ts-mono text-[11px] text-white/35">
             {prices
-              ? `Fee ${(prices.feeBp / 100).toFixed(2)} % per leg`
-              : "Market maker offline"}
+              ? `每段手续费 ${(prices.feeBp / 100).toFixed(2)}%`
+              : "做市商离线"}
           </span>
         </div>
 
         {/* Sell / flip / Buy – the flip button is punched into the seam */}
         <div className="relative">
           <SwapSide
-            label="Sell"
+            label="卖出"
             asset={sellAsset}
             balance={sellBalance}
             options={sellOptions}
@@ -327,7 +327,7 @@ export function SwapView({ market }: SwapViewProps) {
                 inputMode="decimal"
                 value={amountText}
                 placeholder="0.0"
-                aria-label={`Amount of ${assetName(sellAsset)} to sell`}
+                aria-label={`要卖出的 ${assetName(sellAsset)} 数量`}
                 onChange={(e) => setAmountText(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && canSwap) void onSwap();
@@ -340,8 +340,8 @@ export function SwapView({ market }: SwapViewProps) {
           <div className="mt-1.5" />
 
           <SwapSide
-            label="Buy"
-            note={quoting ? "estimating …" : undefined}
+            label="买入"
+            note={quoting ? "估算中…" : undefined}
             asset={buyAsset}
             balance={buyBalance}
             options={ASSET_IDS}
@@ -372,7 +372,7 @@ export function SwapView({ market }: SwapViewProps) {
             <button
               type="button"
               onClick={flip}
-              aria-label="Swap the two assets"
+              aria-label="交换两种资产"
               className="pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-[rgba(9,20,28,0.95)] bg-[#1e2f3a] text-[17px] leading-none text-white/85 transition hover:bg-[#2a4150] hover:text-[var(--amber)] active:translate-y-px"
             >
               ↓
@@ -384,11 +384,11 @@ export function SwapView({ market }: SwapViewProps) {
         <div className="mt-3 min-h-[22px] px-1">
           {quote && (
             <>
-              <InfoRow label="Rate">
+              <InfoRow label="汇率">
                 <span>{rateLine(quote) ?? EM_DASH}</span>
               </InfoRow>
               {refRow && (
-                <InfoRow label="Oracle reference">
+                <InfoRow label="预言机参考价">
                   <span>
                     ref. {formatCentsFine(refRow.oracleCents)} · pool{" "}
                     <span
@@ -403,18 +403,18 @@ export function SwapView({ market }: SwapViewProps) {
                   </span>
                 </InfoRow>
               )}
-              <InfoRow label="Price impact">
+              <InfoRow label="价格影响">
                 <ToneChip tone={impactTone(impact)}>
                   {impactLabel(impact)}
                 </ToneChip>
               </InfoRow>
-              <InfoRow label="Fee">
+              <InfoRow label="手续费">
                 <span>
                   {formatCents(quote.feeCents)} · {(feeBp / 100).toFixed(2)} %
                   {legs > 1 ? ` (${legs} legs)` : ""}
                 </span>
               </InfoRow>
-              <InfoRow label="Minimum received">
+              <InfoRow label="最少获得">
                 <span>{formatAssetShort(buyAsset, minOut)}</span>
               </InfoRow>
             </>
@@ -431,14 +431,14 @@ export function SwapView({ market }: SwapViewProps) {
             )}
           {!quote && !quoteError && !quoting && (
             <p className="text-[12px] text-white/35">
-              Enter an amount to see the rate, the price impact and the fee.
+              输入数量以查看汇率、价格影响和手续费。
             </p>
           )}
         </div>
 
         {/* Slippage tolerance */}
         <div className="mt-3 flex items-center justify-between gap-3 px-1">
-          <span className="text-[12px] text-white/45">Max. slippage</span>
+          <span className="text-[12px] text-white/45">最大滑点</span>
           <div className="flex gap-1">
             {SLIPPAGE_PRESETS.map(([bp, text]) => (
               <button
@@ -486,14 +486,12 @@ export function SwapView({ market }: SwapViewProps) {
 
       {offline && (
         <EmptyNote>
-          The exchange is offline. Sign in to swap materials for dollars at the
-          live pool price.
+          交易所离线。登录后可按实时池子价格把材料兑换成美元。
         </EmptyNote>
       )}
       {!offline && owned.length === 0 && (
         <EmptyNote>
-          No materials in store yet – you can still buy some with dollars, or
-          hand trash in at the station first.
+          仓库里还没有材料——你仍可用美元购买一些，或先把垃圾交到回收站。
         </EmptyNote>
       )}
     </div>
@@ -583,7 +581,7 @@ function SwapSide({
 
       <div className="mt-1.5 flex items-center gap-2">
         <span className="ts-mono text-[12px] text-white/40">
-          Balance:{" "}
+          余额：{" "}
           {balance === null ? EM_DASH : formatAssetShort(asset, balance)}
         </span>
         {onMax && (
@@ -593,7 +591,7 @@ function SwapSide({
             disabled={maxDisabled || !balance}
             className="ts-mono rounded px-1.5 py-0.5 text-[10px] uppercase tracking-[0.12em] text-[var(--amber)] transition hover:bg-[rgba(242,160,7,0.14)] disabled:cursor-not-allowed disabled:text-white/25 disabled:hover:bg-transparent"
           >
-            Max
+            全部
           </button>
         )}
       </div>

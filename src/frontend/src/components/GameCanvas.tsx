@@ -24,7 +24,7 @@ export function GameCanvas() {
     if (!webgl2Available()) {
       st.setEngineStatus(
         "error",
-        "WebGL2 is not available in this browser. Please turn on hardware acceleration (browser settings → System) or try a current Chrome/Firefox/Edge. In some embedded preview windows it helps to open the app in its own tab.",
+        "WebGL2 在此浏览器中不可用。请开启硬件加速（浏览器设置 → 系统），或尝试使用最新版 Chrome/Firefox/Edge。在某些嵌入式预览窗口中，在独立标签页中打开应用会有所帮助。",
       );
       return;
     }

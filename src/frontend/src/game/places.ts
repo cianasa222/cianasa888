@@ -48,24 +48,24 @@ export class Places {
   /** Builds the eight places in sequence, yielding through `step`. */
   async build(quality: QualityId, step: BuildStep): Promise<void> {
     const g = this.group;
-    await step("the old pier");
+    await step("老码头");
     this.pier = new OldPier(g, quality);
-    await step("the bitten edge");
+    await step("缺口崖边");
     this.bittenEdge = new BittenEdge(g, quality);
-    await step("the cable house");
+    await step("缆线小屋");
     this.cableHouse = new CableHouse(g, quality);
-    await step("the old tip");
+    await step("老垃圾场");
     this.tip = new OldTip(g, quality);
-    await step("the boardwalk");
+    await step("木板路");
     this.boardwalk = new WardensBoardwalk(g, quality);
-    await step("lane's end");
+    await step("小巷尽头");
     this.lanesEnd = new LanesEnd(g, quality);
-    await step("the chapel knoll");
+    await step("礼拜堂山丘");
     this.chantry = new ChantryKnoll(g, quality);
-    await step("the bothy");
+    await step("山间小屋");
     this.bothy = new KeldBothy(g, quality);
     // After the bothy: the keeper's key hangs inside it (bothySite frame)
-    await step("the lighthouse");
+    await step("灯塔");
     this.lighthouse = new Lighthouse(g, quality);
   }
 

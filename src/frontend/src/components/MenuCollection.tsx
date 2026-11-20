@@ -1,4 +1,4 @@
-// Display case for the rare finds: vitrine grid (silhouettes for pieces not
+// 展示柜 for the rare finds: vitrine grid (silhouettes for pieces not
 // found yet), per-kind statistics, a 3D inspect viewer (drag to rotate, wheel
 // to zoom) and the readable bottle letters on aged paper.
 //
@@ -139,7 +139,7 @@ function Silhouette({ kind }: { kind: CollectibleKind }) {
       viewBox="0 0 64 64"
       className="h-20 w-20"
       role="img"
-      aria-label="Not yet found"
+      aria-label="尚未找到"
     >
       {kind === "fossil" && (
         <path
@@ -203,7 +203,7 @@ function Silhouette({ kind }: { kind: CollectibleKind }) {
 }
 
 function fmtFound(ms: number): string {
-  return new Date(ms).toLocaleDateString("en-GB", {
+  return new Date(ms).toLocaleDateString("zh-CN", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -260,7 +260,7 @@ function VitrineCell({
         </div>
       ) : (
         <div className="mt-1.5">
-          <div className="ts-label">Not yet found</div>
+          <div className="ts-label">尚未找到</div>
           <div className="mt-0.5 text-[11px] text-white/25">— — —</div>
         </div>
       )}
@@ -405,7 +405,7 @@ function InspectOverlay({
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       <button
         type="button"
-        aria-label="Close inspection"
+        aria-label="关闭查看"
         onClick={onClose}
         className="absolute inset-0 cursor-default bg-[#02060a]/80"
         style={{
@@ -423,7 +423,7 @@ function InspectOverlay({
           }}
         >
           <div className="ts-label pointer-events-none absolute bottom-3 left-0 right-0 text-center opacity-60">
-            Drag to rotate · scroll to zoom
+            拖动旋转 · 滚动缩放
           </div>
         </div>
 
@@ -432,7 +432,7 @@ function InspectOverlay({
           <div className="ts-label">{KIND_NAMES[def.kind]}</div>
           <div className="ts-display mt-1 text-[24px]">{def.name}</div>
           <div className="mt-3 flex items-center gap-2">
-            <Chip tone="amber">Appraised</Chip>
+            <Chip tone="amber">已估价</Chip>
             <span className="ts-mono text-[15px] text-emerald-300">
               {formatCents(def.valueCents)}
             </span>
@@ -441,7 +441,7 @@ function InspectOverlay({
             {def.desc}
           </p>
           <div className="ts-mono mt-3 text-[11px] text-white/40">
-            Found on {fmtFound(foundAt)}
+            发现于 {fmtFound(foundAt)}
           </div>
           <div className="mt-auto space-y-2 pt-4">
             {def.letter && (
@@ -450,7 +450,7 @@ function InspectOverlay({
                 onClick={() => setShowLetter(true)}
                 className="w-full rounded-lg bg-[var(--amber)] px-3 py-2 text-[12px] font-semibold uppercase tracking-wide text-[#17130a] transition hover:brightness-110"
               >
-                Read the letter
+                阅读信件
               </button>
             )}
             <button
@@ -458,7 +458,7 @@ function InspectOverlay({
               onClick={onClose}
               className="w-full rounded-lg bg-white/10 px-3 py-2 text-[12px] font-semibold uppercase tracking-wide transition hover:bg-white/20"
             >
-              Back to the case
+              返回展示柜
             </button>
           </div>
         </aside>
@@ -547,7 +547,7 @@ function LetterOverlay({
           onClick={onClose}
           className="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-lg bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-white shadow-lg backdrop-blur transition hover:bg-white/25"
         >
-          Fold it away
+          收起来
         </button>
       </div>
     </div>
@@ -577,12 +577,12 @@ export function CollectionTab() {
     <div className="space-y-3">
       <Panel className="p-4">
         <SectionHead
-          label="Display case"
-          hint="Rare finds washed up along the coast – each one exists exactly once. Watch for a faint sparkle in the sand."
+          label="展示柜"
+          hint="海岸边冲上岸的稀有发现——每件仅此一件。留意沙滩上微弱的闪光。"
           right={
             <div className="text-right">
               <div className="ts-mono text-[13px] text-white/70">
-                {found} / {COLLECTIBLES.length} found
+                {found} / {COLLECTIBLES.length} 已找到
               </div>
               {found > 0 && (
                 <div className="ts-mono mt-0.5 text-[12px] text-emerald-300">

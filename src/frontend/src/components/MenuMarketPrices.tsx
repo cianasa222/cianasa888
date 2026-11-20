@@ -32,8 +32,8 @@ export function PricesView({ market }: PricesViewProps) {
   return (
     <Panel className="p-4">
       <SectionHead
-        label="Price board"
-        hint="Pool mid against the reference price. The pool moves with every swap; the reference does not."
+        label="价格牌"
+        hint="池子中间价对照参考价。池子随每次兑换而变动，参考价不变。"
         right={
           <div className="flex h-4 items-center justify-end">
             {market.pricesBusy ? (
@@ -49,7 +49,7 @@ export function PricesView({ market }: PricesViewProps) {
 
       {!prices ? (
         <EmptyNote>
-          No connection to the exchange. Sign in to see live prices.
+          无法连接交易所。登录后查看实时价格。
         </EmptyNote>
       ) : (
         <>
@@ -58,19 +58,19 @@ export function PricesView({ market }: PricesViewProps) {
               <thead>
                 <tr className="border-b border-white/10">
                   <th className="ts-label pb-2 text-left font-normal">
-                    Material
+                    材料
                   </th>
                   <th className="ts-label pb-2 text-right font-normal">
-                    Pool mid
+                    池子中间价
                   </th>
                   <th className="ts-label pb-2 text-right font-normal">
-                    Reference
+                    参考价
                   </th>
                   <th className="ts-label pb-2 text-right font-normal">
-                    Deviation
+                    偏差
                   </th>
                   <th className="ts-label pb-2 text-right font-normal">
-                    Trend
+                    趋势
                   </th>
                 </tr>
               </thead>
@@ -83,10 +83,8 @@ export function PricesView({ market }: PricesViewProps) {
           </div>
 
           <p className="ts-mono mt-3 text-[11px] leading-relaxed text-white/30">
-            Wholesale desk pays {(prices.wholesaleSpreadBp / 100).toFixed(0)} %
-            below the reference · {num(prices.swaps)} swaps ·{" "}
-            {formatCents(prices.feeBurnedCents)} in fees burnt. Every figure is
-            in-game money.
+            批发柜台按参考价低 {(prices.wholesaleSpreadBp / 100).toFixed(0)}% 收购 · {num(prices.swaps)} 次兑换 ·{" "}
+            已销毁手续费 {formatCents(prices.feeBurnedCents)}。所有数字均为游戏内货币。
           </p>
         </>
       )}

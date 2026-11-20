@@ -514,16 +514,16 @@ export class Lighthouse {
 
     // Interactions
     this.actKey = {
-      prompt: "Take the keeper's key",
+      prompt: "拿走守塔人的钥匙",
       run: () => this.takeKey(),
     };
-    this.actTry = { prompt: "Try the door", run: () => this.tryDoor() };
+    this.actTry = { prompt: "试试这扇门", run: () => this.tryDoor() };
     this.actUnlock = {
-      prompt: "Unlock the lighthouse door",
+      prompt: "解锁灯塔的门",
       run: () => this.unlockDoor(),
     };
     this.actLamp = {
-      prompt: "Switch the main light on",
+      prompt: "打开主灯",
       run: () => this.toggleLamp(),
     };
 
@@ -550,7 +550,7 @@ export class Lighthouse {
       if (this.lever) this.lever.rotation.x = 0.6 - 1.2;
     }
     this.actLamp.prompt = this.lampOn
-      ? "Switch the main light off"
+      ? "关闭主灯"
       : "Switch the main light on";
     this.applyIndicator();
   }
@@ -1998,15 +1998,15 @@ export class Lighthouse {
     st.setLighthouse({ hasKey: true });
     this.keyGroup.visible = false;
     this.hasKey = true;
-    st.toast("An old brass key â€” stamped 'SALTREACH LIGHT'.", "good");
-    st.float("Keeper's key found", "#eab308");
+    st.toast("一把旧黄铜钥匙——上面刻着“SALTREACH LIGHT”。", "good");
+    st.float("已找到守塔人的钥匙", "#eab308");
   }
 
   private tryDoor(): void {
     const st = useGame.getState();
     sound.switchThunk(false);
     st.toast(
-      "Locked fast. The keeper's key must still be about â€” perhaps in the old bothy.",
+      "锁得死死的。守塔人的钥匙一定还在附近——也许在旧山间小屋里。",
       "warn",
     );
   }
@@ -2018,7 +2018,7 @@ export class Lighthouse {
     st.setLighthouse({ unlocked: true });
     this.unlocked = true;
     clearColliderSet("lighthouse-door");
-    st.toast("The lock gives. The lighthouse is open.", "good");
+    st.toast("锁开了。灯塔打开了。", "good");
   }
 
   private toggleLamp(): void {
@@ -2028,11 +2028,11 @@ export class Lighthouse {
     st.setLighthouse({ lampOn: on });
     this.lampOn = on;
     this.actLamp.prompt = on
-      ? "Switch the main light off"
+      ? "关闭主灯"
       : "Switch the main light on";
     this.applyIndicator();
     st.toast(
-      on ? "The lamp motor hums into life." : "The lamp winds down.",
+      on ? "灯塔电机嗡嗡启动了。" : "灯慢慢熄灭了。",
       on ? "good" : "info",
     );
   }
@@ -2062,7 +2062,7 @@ export class Lighthouse {
     if (ls.lampOn !== this.lampOn) {
       this.lampOn = ls.lampOn;
       this.actLamp.prompt = this.lampOn
-        ? "Switch the main light off"
+        ? "关闭主灯"
         : "Switch the main light on";
       this.applyIndicator();
     }

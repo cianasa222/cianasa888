@@ -27,11 +27,10 @@ export class ErrorBoundary extends Component<Props, State> {
       <div className="fixed inset-0 z-[999] flex items-center justify-center bg-[#06202e] p-6 text-white">
         <div className="w-full max-w-lg rounded-2xl border border-red-400/40 bg-[#0b2a3a] p-5 shadow-2xl">
           <div className="mb-2 text-lg font-bold text-red-300">
-            Oops – something went wrong
+            哎呀——出错了
           </div>
           <p className="mb-3 text-sm text-white/80">
-            The game hit an unexpected error. Reload the page – if the problem
-            persists, the error text below helps track it down:
+            游戏遇到了意外错误。请重新加载页面——如果问题仍然存在，下面的错误文本有助于排查：
           </p>
           <pre className="scroll-thin mb-4 max-h-48 select-text overflow-auto whitespace-pre-wrap rounded-lg bg-black/40 p-3 text-[11px] leading-snug text-red-200">
             {text}
@@ -41,7 +40,7 @@ export class ErrorBoundary extends Component<Props, State> {
             onClick={() => window.location.reload()}
             className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-[#04222e] hover:bg-cyan-400"
           >
-            Reload page
+            重新加载页面
           </button>
         </div>
       </div>

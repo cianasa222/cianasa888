@@ -52,7 +52,7 @@ export function assetTicker(asset: SwapAsset): string {
 }
 
 export function assetName(asset: SwapAsset): string {
-  return isMaterialId(asset) ? MATERIALS[asset].name : "Dollars";
+  return isMaterialId(asset) ? MATERIALS[asset].name : "美元";
 }
 
 /** "kg" / "L" for a material, "$" for the dollar. */
@@ -130,9 +130,9 @@ export function impactTone(bp: number): ExchangeTone {
  * literal instead of printing precision the number does not carry.
  */
 export function impactLabel(bp: number): string {
-  if (bp < 50) return "< 0.5 % impact";
+  if (bp < 50) return "< 0.5% 影响";
   const pct = (bp / 100).toFixed(2);
-  return bp >= 500 ? `⚠ ${pct} % impact` : `${pct} % impact`;
+  return bp >= 500 ? `⚠ ${pct}% 影响` : `${pct}% 影响`;
 }
 
 /** Small coloured badge – like Chip, but with a red band for danger. */
@@ -221,7 +221,7 @@ export function Sparkline({
         viewBox={`0 0 ${width} ${height}`}
         aria-hidden="true"
       >
-        <title>No history yet</title>
+        <title>暂无记录</title>
         <line
           x1={pad}
           y1={height / 2}

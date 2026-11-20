@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 // Trash Simulator – profile hookup: registration, save game, leaderboard, market
 // There is no local save game: everything lives in the profile on chain.
 import { useInternetIdentity } from "../auth/internetIdentity";
@@ -24,6 +24,20 @@ import { useActor } from "./useActor";
 
 /** Automatic save to the profile every five minutes. */
 export const AUTOSAVE_MS = 300_000;
+
+/** localStorage key for the guest (local-only) save game. */
+export const GUEST_SAVE_KEY = "trash-guest-save-v1";
+
+/** Reads the guest save, or null when there is none / it is unreadable. */
+function readGuestSave(): SaveData | null {
+  try {
+    const raw = localStorage.getItem(GUEST_SAVE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as SaveData;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Unwraps an optional Candid value, no matter how the generated bindings
@@ -73,13 +87,13 @@ export type RegisterOutcome =
 // ---------------------------------------------------------------- marketplace
 
 /** Shown whenever the market is used without a backend connection. */
-export const MARKET_OFFLINE = "The marketplace is offline – please sign in";
+export const MARKET_OFFLINE = "市场离线——请先登录";
 /**
  * Stable message for the pool's per-swap size cap (#poolTooThin). The swap UI
  * compares against this constant – never rephrase it in one place only.
  */
 export const MARKET_TOO_LARGE =
-  "Too large for this market – try a smaller amount";
+  "数量超出本市场上限——请减少数量";
 
 /** An open sell order, converted from Candid to plain numbers. */
 export interface MarketOrder {
@@ -315,35 +329,35 @@ function variantPayload(res: unknown, key: string): unknown {
 function marketErrorText(err: unknown): string {
   switch (variantKey(err)) {
     case "anonymous":
-      return "Please sign in first";
+      return "请先登录";
     case "notRegistered":
-      return "You need a player profile first";
+      return "需要先创建玩家资料";
     case "unknownMaterial":
-      return "Unknown material";
+      return "未知材料";
     case "invalidAmount":
-      return "Invalid amount (1 – 100,000 units)";
+      return "数量无效（1–100,000 单位）";
     case "invalidPrice":
-      return "Invalid price (1 cent – $10,000 per unit)";
+      return "价格无效（每单位 1 美分–$10,000）";
     case "tooManyOrders":
-      return "Too many open orders (30 at most)";
+      return "公开挂单过多（最多 30 个）";
     case "notFound":
-      return "This order no longer exists";
+      return "该挂单已不存在";
     case "notSeller":
-      return "Only the seller can withdraw this order";
+      return "只有卖家可以撤回此挂单";
     case "ownOrder":
-      return "You cannot buy your own order";
+      return "不能购买自己的挂单";
     case "insufficientFunds":
-      return "Not enough money";
+      return "余额不足";
     case "unknownAsset":
-      return "Unknown asset";
+      return "未知资产";
     case "identicalAssets":
-      return "Pick two different assets";
+      return "请选择两种不同的资产";
     case "slippage":
-      return "The price moved – the swap would pay less than your limit";
+      return "价格已变动——兑换所得将低于你的限价";
     case "poolTooThin":
       return MARKET_TOO_LARGE;
     default:
-      return "The marketplace rejected the request";
+      return "市场拒绝了该请求";
   }
 }
 
@@ -518,10 +532,12 @@ function toNat(n: number): bigint {
 
 export interface BackendSync {
   isAuthenticated: boolean;
+  isGuest: boolean;
   isLoggingIn: boolean;
   authInitializing: boolean;
   loginError: string | null;
   login: () => void;
+  loginGuest: () => void;
   logout: () => void;
 
   profile: ProfileOutput | null;
@@ -537,6 +553,8 @@ export interface BackendSync {
 
   cloudSave: SaveOutput | null;
   cloudChecking: boolean;
+  /** True when a guest save exists on this device. */
+  hasLocalSave: boolean;
   loadProfileIntoGame: () => void;
   loadBusy: boolean;
   saveToProfile: () => void;
@@ -556,15 +574,36 @@ export function useBackendSync(): BackendSync {
   const {
     identity,
     isAuthenticated,
+    isGuest,
     isLoggingIn,
     isInitializing,
     loginError,
     login,
+    loginGuest,
     clear,
   } = useInternetIdentity();
   const { actor } = useActor<backendInterface>(createActor);
   const qc = useQueryClient();
   const principal = identity?.getPrincipal().toText() ?? "anon";
+
+  // Guest save presence on this device; refreshed whenever a guest save is
+  // written, loaded or deleted through this hook.
+  const [hasLocalSave, setHasLocalSave] = useState<boolean>(
+    () => readGuestSave() != null,
+  );
+
+  /** Writes the current game state to the guest save on this device. */
+  const saveGuestLocal = useCallback(() => {
+    const st = useGame.getState();
+    try {
+      localStorage.setItem(GUEST_SAVE_KEY, JSON.stringify(st.serialize()));
+    } catch {
+      /* Storage full/unavailable – the game keeps running unsaved */
+    }
+    st.setCloud("online");
+    st.clearDirty();
+    setHasLocalSave(true);
+  }, []);
 
   const profileQuery = useQuery({
     queryKey: ["profile", principal],
@@ -587,9 +626,15 @@ export function useBackendSync(): BackendSync {
       return;
     }
     if (st.cloudStatus === "offline") st.setCloud("online");
+    // Guests get a random display name on first entry; a saved name (from a
+    // loaded guest save) is kept.
+    if (isGuest && st.playerName === "Collector") {
+      st.setPlayerName(`游客${Math.floor(1000 + Math.random() * 9000)}`);
+      return;
+    }
     if (profile && profile.name !== st.playerName)
       st.setPlayerName(profile.name);
-  }, [isAuthenticated, profile]);
+  }, [isAuthenticated, isGuest, profile]);
 
   const cloudQuery = useQuery({
     queryKey: ["cloudSave", principal],
@@ -738,7 +783,7 @@ export function useBackendSync(): BackendSync {
       try {
         return await runMarket(action);
       } catch {
-        return marketFail("The marketplace is not reachable");
+        return marketFail("无法连接到市场");
       }
     },
     [actor, isAuthenticated, runMarket],
@@ -799,7 +844,7 @@ export function useBackendSync(): BackendSync {
       } catch {
         return {
           ok: false,
-          error: "The marketplace is not reachable",
+          error: "无法连接到市场",
           quote: null,
         };
       }
@@ -819,7 +864,7 @@ export function useBackendSync(): BackendSync {
 
   const registerMutation = useMutation({
     mutationFn: async (name: string): Promise<RegisterOutcome> => {
-      if (!actor) throw new Error("No connection");
+      if (!actor) throw new Error("无连接");
       const res = await actor.registerProfile(name);
       const key = variantKey(res);
       if (key === "ok" || key === "alreadyRegistered") return "ok";
@@ -848,7 +893,7 @@ export function useBackendSync(): BackendSync {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      if (!actor || !isAuthenticated) throw new Error("Not signed in");
+      if (!actor || !isAuthenticated) throw new Error("未登录");
       const st = useGame.getState();
       const input: SaveInput = {
         xp: BigInt(Math.floor(st.xp)),
@@ -860,7 +905,7 @@ export function useBackendSync(): BackendSync {
       };
       useGame.getState().setCloud("sync");
       const ok = await actor.saveGame(input);
-      if (!ok) throw new Error("Save rejected");
+      if (!ok) throw new Error("保存被拒绝");
     },
     onSuccess: () => {
       const st = useGame.getState();
@@ -872,13 +917,13 @@ export function useBackendSync(): BackendSync {
       void qc.invalidateQueries({ queryKey: ["cloudSave", principal] });
     },
     onError: () => {
-      useGame.getState().setCloud("error", "Saving to the profile failed");
+      useGame.getState().setCloud("error", "保存到资料失败");
     },
   });
 
   const resetMutation = useMutation({
     mutationFn: async () => {
-      if (!actor || !isAuthenticated) throw new Error("Not signed in");
+      if (!actor || !isAuthenticated) throw new Error("未登录");
       await actor.resetProgress();
     },
     onSuccess: () => {
@@ -887,20 +932,39 @@ export function useBackendSync(): BackendSync {
     },
   });
 
-  // Automatic save every five minutes, provided there are changes
+  // Automatic save every five minutes, provided there are changes.
+  // Guests save locally on the same schedule (no actor needed).
   const savingRef = useRef(false);
   savingRef.current = saveMutation.isPending;
   const saveFn = saveMutation.mutate;
   useEffect(() => {
-    if (!isAuthenticated || !actor) return;
+    if (!isAuthenticated) return;
+    if (!isGuest && !actor) return;
     const t = window.setInterval(() => {
       const st = useGame.getState();
-      if (st.cloudDirty && st.screen === "game" && !savingRef.current) saveFn();
+      if (st.cloudDirty && st.screen === "game" && !savingRef.current) {
+        if (isGuest) saveGuestLocal();
+        else saveFn();
+      }
     }, AUTOSAVE_MS);
     return () => window.clearInterval(t);
-  }, [isAuthenticated, actor, saveFn]);
+  }, [isAuthenticated, isGuest, actor, saveFn, saveGuestLocal]);
 
   const loadProfileIntoGame = useCallback(() => {
+    if (isGuest) {
+      const st = useGame.getState();
+      const save = readGuestSave();
+      if (!save) return;
+      try {
+        st.applySave(save);
+        st.setScreen("game");
+        st.setCloud("online");
+        st.clearDirty();
+      } catch {
+        st.setCloud("error", "本设备上的存档无法读取");
+      }
+      return;
+    }
     const out = cloudQuery.data;
     const st = useGame.getState();
     if (!out || out.data.length === 0) return;
@@ -910,15 +974,25 @@ export function useBackendSync(): BackendSync {
       st.setCloud("online");
       st.clearDirty();
     } catch {
-      st.setCloud("error", "The save game in the profile is unreadable");
+      st.setCloud("error", "资料中的存档无法读取");
     }
-  }, [cloudQuery.data]);
+  }, [isGuest, cloudQuery.data]);
 
   const startFreshRun = useCallback(() => {
     const name = useGame.getState().playerName;
+    if (isGuest) {
+      try {
+        localStorage.removeItem(GUEST_SAVE_KEY);
+      } catch {
+        /* ignore */
+      }
+      setHasLocalSave(false);
+      useGame.getState().newGame(name);
+      return;
+    }
     resetMutation.mutate();
     useGame.getState().newGame(name);
-  }, [resetMutation.mutate]);
+  }, [isGuest, resetMutation.mutate]);
 
   const checkNameAvailable = useCallback(
     async (name: string): Promise<boolean> => {
@@ -932,12 +1006,23 @@ export function useBackendSync(): BackendSync {
     [actor],
   );
 
+  /** Guests save to this device; signed-in players save to the profile. */
+  const saveToProfile = useCallback(() => {
+    if (isGuest) {
+      saveGuestLocal();
+      return;
+    }
+    saveMutation.mutate();
+  }, [isGuest, saveGuestLocal, saveMutation.mutate]);
+
   return {
     isAuthenticated,
+    isGuest,
     isLoggingIn,
     authInitializing: isInitializing,
     loginError,
     login: () => login(),
+    loginGuest,
     logout: clear,
 
     profile,
@@ -960,15 +1045,16 @@ export function useBackendSync(): BackendSync {
 
     cloudSave: cloudQuery.data ?? null,
     cloudChecking: cloudQuery.isFetching,
+    hasLocalSave,
     loadProfileIntoGame,
     loadBusy: cloudQuery.isFetching,
-    saveToProfile: () => saveMutation.mutate(),
+    saveToProfile,
     saveBusy: saveMutation.isPending,
     startFreshRun,
     resetBusy: resetMutation.isPending,
 
-    // null = no connection (so the UI shows "No connection" instead of the
-    // misleading "No entries yet" when there is simply no actor/session).
+    // null = no connection (so the UI shows "无连接" instead of the
+    // misleading "暂无记录" when there is simply no actor/session).
     leaderboard: !actor || lbQuery.isError ? null : (lbQuery.data ?? []),
     globalStats: gsQuery.data ?? null,
     leaderboardBusy: lbQuery.isFetching,
@@ -989,7 +1075,7 @@ export function useBackendSync(): BackendSync {
       error: !actor
         ? MARKET_OFFLINE
         : ordersQuery.isError || balanceQuery.isError
-          ? "The marketplace is not reachable"
+          ? "无法连接到市场"
           : marketMutation.data && !marketMutation.data.ok
             ? marketMutation.data.error
             : null,

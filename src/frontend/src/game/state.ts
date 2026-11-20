@@ -521,7 +521,7 @@ function checkMissions(
       bonusXp += m.rewardXp;
       bonusPoints += m.rewardPoints;
       st.toast(
-        `Mission complete: ${m.name} (+${m.rewardXp} XP, +${m.rewardPoints} pts)`,
+        `任务完成：${m.name}（+${m.rewardXp} 经验，+${m.rewardPoints} 积分）`,
         "good",
       );
     }
@@ -732,7 +732,7 @@ export const useGame = create<GameStore>((set, get) => ({
     const after = get().level();
     if (after > before && after <= MAX_LEVEL) {
       sound.levelUp();
-      get().toast(`Level ${after} reached!`, "good");
+      get().toast(`升到 ${after} 级！`, "good");
     }
     checkMissions(get, set);
     get().markDirty();
@@ -844,7 +844,7 @@ export const useGame = create<GameStore>((set, get) => ({
     const after = get().level();
     if (after > before && after <= MAX_LEVEL) {
       sound.levelUp();
-      get().toast(`Level ${after} reached!`, "good");
+      get().toast(`升到 ${after} 级！`, "good");
     }
     checkMissions(get, set);
     get().markDirty();
@@ -902,7 +902,7 @@ export const useGame = create<GameStore>((set, get) => ({
       if (units > 0)
         parts.push(`+${units} ${MATERIALS[id].unit} ${MATERIALS[id].name}`);
     }
-    if (parts.length > 0) get().toast(`Recycled: ${parts.join(" · ")}`, "good");
+    if (parts.length > 0) get().toast(`已回收：${parts.join(" · ")}`, "good");
     get().markDirty();
   },
 
@@ -934,7 +934,7 @@ export const useGame = create<GameStore>((set, get) => ({
       collection: { ...st.collection, [id]: Date.now() },
       cloudDirty: true,
     });
-    st.toast(`Rare find: ${def.name} – now in your display case`, "good");
+    st.toast(`稀有发现：${def.name}——已放入你的展示柜`, "good");
     st.float(`✦ ${def.name}`, "#ffd76a");
     get().markDirty();
     return true;
@@ -974,7 +974,7 @@ export const useGame = create<GameStore>((set, get) => ({
         lighthouse: { ...s.lighthouse },
         tool: s.tool,
       });
-      st.toast("Test mode off – your real progress is restored.", "info");
+      st.toast("测试模式已关闭——你的真实进度已恢复。", "info");
     } else {
       const upgrades: Record<string, number> = {};
       for (const u of UPGRADES) upgrades[u.id] = u.values.length - 1;
@@ -994,7 +994,7 @@ export const useGame = create<GameStore>((set, get) => ({
         lighthouse: { ...st.lighthouse, hasKey: true },
       });
       st.toast(
-        "Test mode on – everything unlocked. Progress made while testing is not kept.",
+        "测试模式已开启——全部内容已解锁。测试期间的进度不会保留。",
         "good",
       );
     }
@@ -1012,7 +1012,7 @@ export const useGame = create<GameStore>((set, get) => ({
     const after = get().level();
     if (after > before && after <= MAX_LEVEL) {
       sound.levelUp();
-      get().toast(`Level ${after} reached!`, "good");
+      get().toast(`升到 ${after} 级！`, "good");
     }
     checkMissions(get, set);
     get().markDirty();
@@ -1027,11 +1027,11 @@ export const useGame = create<GameStore>((set, get) => ({
     const cost = def.costs[stage];
     const reqLevel = def.levelReq[stage];
     if (st.level() < reqLevel) {
-      st.toast(`Requires level ${reqLevel}.`, "warn");
+      st.toast(`需要等级 ${reqLevel}。`, "warn");
       return false;
     }
     if (st.recyclePoints < cost) {
-      st.toast("Not enough recycling points.", "warn");
+      st.toast("回收积分不足。", "warn");
       return false;
     }
     set({
@@ -1039,7 +1039,7 @@ export const useGame = create<GameStore>((set, get) => ({
       upgrades: { ...st.upgrades, [id]: stage + 1 },
       cloudDirty: true,
     });
-    st.toast(`${def.name} upgraded!`, "good");
+    st.toast(`${def.name} 已升级！`, "good");
     get().markDirty();
     return true;
   },

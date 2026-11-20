@@ -148,7 +148,7 @@ export function TouchUI() {
 
       {/* Sprint toggle above the stick */}
       <Btn
-        label="Sprint"
+        label="疾跑"
         className={`absolute bottom-44 left-10 h-12 w-12 text-[10px] font-semibold uppercase tracking-wide ${sprint ? "ring-2 ring-emerald-300" : ""}`}
         action={() => {
           const v = !sprint;
@@ -161,12 +161,12 @@ export function TouchUI() {
       <div className="absolute bottom-8 right-6 flex flex-col items-end gap-3">
         <div className="flex items-end gap-3">
           <Btn
-            label={st.inJeep ? "Exit" : "Enter"}
+            label={st.inJeep ? "下车" : "上车"}
             className="h-14 w-14 text-[10px] font-semibold uppercase leading-tight tracking-wide"
             action={() => fireTouchAction("vehicle")}
           />
           <Btn
-            label="Use"
+            label="使用"
             className="h-14 w-14 text-[10px] font-semibold uppercase leading-tight tracking-wide"
             action={() => fireTouchAction("action")}
           />
@@ -175,14 +175,14 @@ export function TouchUI() {
           {/* Tool swap appears once the detector is owned (marketplace). */}
           {!st.inJeep && (st.upgrades.detector ?? 0) >= 1 && (
             <Btn
-              label="Tool"
+              label="工具"
               className="h-14 w-14 text-[10px] font-semibold uppercase leading-tight tracking-wide"
               action={() => fireTouchAction("toolCycle")}
             />
           )}
           {!st.inJeep && (
             <Btn
-              label="Jump"
+              label="跳跃"
               className="h-14 w-14 text-[10px] font-semibold uppercase leading-tight tracking-wide"
               action={() => fireTouchAction("jump")}
             />
@@ -198,13 +198,13 @@ export function TouchUI() {
               onPointerCancel={hornUp}
               onLostPointerCapture={hornUp}
             >
-              Horn
+              喇叭
             </button>
           )}
           {/* Grabbing is impossible from the driver's seat – hide the button */}
           {!st.inJeep && (
             <Btn
-              label="Grab"
+              label="抓取"
               className={`h-20 w-20 text-[12px] font-bold uppercase tracking-wide ${canGrab ? "ring-2 ring-emerald-300" : "opacity-70"}`}
               action={() => fireTouchAction("primary")}
             />
@@ -215,12 +215,12 @@ export function TouchUI() {
       {/* Top right: pause + menu */}
       <div className="absolute right-3 top-16 flex gap-2">
         <Btn
-          label="Menu"
+          label="菜单"
           className="h-11 w-11 text-[10px] font-semibold uppercase tracking-wide"
           action={() => fireTouchAction("menu")}
         />
         <Btn
-          label="Pause"
+          label="暂停"
           className="h-11 w-11 text-[10px] font-semibold uppercase tracking-wide"
           action={() => fireTouchAction("pause")}
         />

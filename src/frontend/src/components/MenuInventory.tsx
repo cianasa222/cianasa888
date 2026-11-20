@@ -94,9 +94,9 @@ export function InventoryTab() {
   return (
     <div className="space-y-3">
       <Carrier
-        label="Bucket"
-        hint="What you are carrying right now."
-        empty="Your bucket is empty. Aim at a piece of trash and pick it up with the left mouse button."
+        label="桶"
+        hint="你当前携带的物品。"
+        empty="你的桶是空的。瞄准一件垃圾，用鼠标左键拾取。"
         rec={st.bucket}
         count={st.bucketCount}
         capacity={st.bucketCapacity()}
@@ -104,9 +104,9 @@ export function InventoryTab() {
       />
 
       <Carrier
-        label="Jeep"
-        hint="The load bed – tip your bucket in with F next to the jeep."
-        empty="The load bed is empty. Stand beside the jeep and press F to tip your bucket in."
+        label="吉普车"
+        hint="货厢——站在吉普车旁按 F 把桶倒进去。"
+        empty="货厢是空的。站在吉普车旁按 F 把桶倒进去。"
         rec={st.jeepLoad}
         count={st.jeepCount}
         capacity={st.jeepCapacity()}
@@ -115,8 +115,8 @@ export function InventoryTab() {
 
       <Panel className="p-4">
         <SectionHead
-          label="Your depot"
-          hint="Everything handed in at the recycling station. Each line is baled into one sellable material."
+          label="你的仓库"
+          hint="在回收站交来的所有物品。每条都会打包成一种可出售的材料。"
           right={
             <span className="ts-mono text-[13px] text-white/70">
               {num(st.stationStored)} / {num(STATION_CAPACITY)}
@@ -132,8 +132,7 @@ export function InventoryTab() {
         <div className="mt-3 space-y-2.5">
           {lines.length === 0 ? (
             <EmptyNote>
-              Nothing waiting at the station. Drive a load over and press F at
-              the ramp to hand it in.
+              回收站没有待处理的物品。开一车过去，在坡道旁按 F 交货。
             </EmptyNote>
           ) : (
             lines.map((c) => <StationLine key={c} cat={c} />)
@@ -142,8 +141,8 @@ export function InventoryTab() {
 
         <div className="mt-4 border-t border-white/10 pt-3">
           <SectionHead
-            label="Materials store"
-            hint="Baled and ready to trade on the marketplace."
+            label="材料仓库"
+            hint="已打包，可在市场上交易。"
             right={
               owned.length > 0 ? (
                 <span className="ts-mono text-[13px] text-emerald-300">
@@ -154,8 +153,7 @@ export function InventoryTab() {
           />
           {owned.length === 0 ? (
             <EmptyNote>
-              No materials yet. The station keeps processing what you hand in –
-              come back once a line is full.
+              暂无材料。回收站正在处理你交来的物品——等某条线满了再回来。
             </EmptyNote>
           ) : (
             <ul className="grid gap-x-5 gap-y-1.5 sm:grid-cols-2">
@@ -201,7 +199,7 @@ function StationLine({ cat }: { cat: CategoryId }) {
           <div className="text-[11px] text-white/40">→ {mat.name}</div>
         </div>
         <span className="ts-mono text-[12px] text-white/70">
-          {num(queue)} waiting
+          {num(queue)} 等待中
         </span>
       </div>
       <div className="mt-2 flex items-center gap-2">
@@ -214,7 +212,7 @@ function StationLine({ cat }: { cat: CategoryId }) {
           />
         </div>
         <span className="ts-mono shrink-0 text-[10px] text-white/40">
-          {progress} / {mat.itemsPerUnit} to the next {mat.unit}
+          {progress} / {mat.itemsPerUnit}，下一 {mat.unit}
         </span>
       </div>
     </div>

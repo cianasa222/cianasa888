@@ -68,8 +68,8 @@ export function BookView({ market }: BookViewProps) {
       {/* Order book */}
       <Panel className="p-4">
         <SectionHead
-          label="Limit order book"
-          hint="Open sell orders from every operator on the coast. A limit order waits for a buyer instead of paying the pool price."
+          label="限价挂单簿"
+          hint="海岸上所有操作员的公开卖单。限价单会等待买家，而不是按池子价格成交。"
           right={
             <span className="ts-mono text-[12px] text-white/50">
               {num(orders.length)} open
@@ -78,7 +78,7 @@ export function BookView({ market }: BookViewProps) {
         />
         {orders.length === 0 ? (
           <EmptyNote>
-            No open orders right now. Put your own material up for sale below.
+            目前没有公开挂单。在下方挂出你自己的材料。
           </EmptyNote>
         ) : (
           <ul className="space-y-2">
@@ -95,13 +95,12 @@ export function BookView({ market }: BookViewProps) {
       {/* Wholesaler */}
       <Panel className="p-4">
         <SectionHead
-          label="Wholesale desk"
-          hint="Instant sale at the reference price – no waiting for a buyer."
+          label="批发柜台"
+          hint="按参考价即时出售——无需等待买家。"
         />
         {owned.length === 0 ? (
           <EmptyNote>
-            Nothing in store yet. Hand trash in at the station and let it be
-            processed into material.
+            仓库还是空的。把垃圾交到回收站，让它加工成材料。
           </EmptyNote>
         ) : (
           <ul className="space-y-2">
@@ -137,7 +136,7 @@ function OrderRow({
   const onCancel = async () => {
     const res = await market.cancelOrder(order.id);
     if (!res.ok) {
-      toast(res.error ?? "The order could not be withdrawn.", "warn");
+      toast(res.error ?? "无法撤单。", "warn");
       return;
     }
     // The returned order carries what was left – that goes back into the store.
@@ -146,7 +145,7 @@ function OrderRow({
       useGame.getState().addMaterials(order.material, back);
     }
     toast(
-      `Order withdrawn: ${num(back)} ${unit} ${matName(order.material)} back in store`,
+      `已撤单：${num(back)} ${unit} ${matName(order.material)} 已返回仓库`,
       "good",
     );
   };
@@ -154,14 +153,14 @@ function OrderRow({
   const onBuy = async () => {
     const res = await market.buy(order.id, take);
     if (!res.ok) {
-      toast(res.error ?? "The purchase failed.", "warn");
+      toast(res.error ?? "购买失败。", "warn");
       return;
     }
     if (isMaterialId(order.material)) {
       useGame.getState().addMaterials(order.material, take);
     }
     toast(
-      `Bought ${num(take)} ${unit} ${matName(order.material)} for ${formatCents(res.costCents ?? cost)}`,
+      `已购买 ${num(take)} ${unit} ${matName(order.material)}，花费 ${formatCents(res.costCents ?? cost)}`,
       "good",
     );
   };
@@ -181,11 +180,11 @@ function OrderRow({
             <span className="truncate text-[13px] text-white/85">
               {matName(order.material)}
             </span>
-            {order.mine && <Chip tone="amber">Yours</Chip>}
+            {order.mine && <Chip tone="amber">我的</Chip>}
           </div>
           <div className="ts-mono text-[11px] text-white/40">
             {num(order.amount)} {unit} @ {formatCents(order.pricePerUnitCents)}/
-            {unit} · {order.sellerName || "Unknown"}
+            {unit} · {order.sellerName || "未知"}
           </div>
         </div>
         <div className="ts-mono text-right">
@@ -193,7 +192,7 @@ function OrderRow({
             {formatCents(order.amount * order.pricePerUnitCents)}
           </div>
           <div className="text-[10px] uppercase tracking-[0.14em] text-white/35">
-            total
+            总计
           </div>
         </div>
         {order.mine ? (
@@ -203,7 +202,7 @@ function OrderRow({
             disabled={market.busy}
             className="rounded-lg bg-white/10 px-3 py-1.5 text-[12px] font-semibold transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            Withdraw
+            撤单
           </button>
         ) : (
           <div className="flex items-center gap-2">
@@ -224,7 +223,7 @@ function OrderRow({
                   : "cursor-not-allowed bg-white/[0.07] text-white/35"
               }`}
             >
-              Buy {formatCents(cost)}
+              购买 {formatCents(cost)}
             </button>
           </div>
         )}
@@ -259,12 +258,11 @@ function SellPanel({
     return (
       <Panel className="p-4">
         <SectionHead
-          label="New limit order"
-          hint="Offer your own material at a price of your choosing."
+          label="新建限价单"
+          hint="按你自己定的价格出售材料。"
         />
         <EmptyNote>
-          You have no material to sell yet. The station turns handed-in trash
-          into sellable goods.
+          你还没有可出售的材料。回收站会把交来的垃圾变成可出售的商品。
         </EmptyNote>
       </Panel>
     );
@@ -283,17 +281,17 @@ function SellPanel({
     const st = useGame.getState();
     // Escrow: the material leaves the store first, so it can never be sold twice.
     if (!st.takeMaterials(active, take)) {
-      toast("Not enough material in store.", "warn");
+      toast("仓库里的材料不够。", "warn");
       return;
     }
     const res = await market.createOrder(active, take, cents);
     if (!res.ok) {
       useGame.getState().addMaterials(active, take);
-      toast(res.error ?? "The order could not be created.", "warn");
+      toast(res.error ?? "无法创建挂单。", "warn");
       return;
     }
     toast(
-      `Order created: ${num(take)} ${def.unit} ${def.name} @ ${formatCents(cents)}/${def.unit}`,
+      `挂单已创建：${num(take)} ${def.unit} ${def.name}，单价 ${formatCents(cents)}/${def.unit}`,
       "good",
     );
   };
@@ -301,8 +299,8 @@ function SellPanel({
   return (
     <Panel className="p-4">
       <SectionHead
-        label="New limit order"
-        hint="Offer your own material at a price of your choosing."
+        label="新建限价单"
+        hint="按你自己定的价格出售材料。"
       />
 
       <div className="flex flex-wrap gap-1.5">
@@ -352,12 +350,12 @@ function SellPanel({
               className="ts-mono h-7 w-20 rounded-md border border-white/15 bg-black/45 px-2 text-right text-[12px] text-white outline-none transition focus:border-[var(--amber)]"
             />
             <span className="ts-mono text-[11px] text-white/35">
-              ref. {formatCents(def.basePriceCents)}
+              参考价 {formatCents(def.basePriceCents)}
             </span>
           </div>
         </div>
         <div className="ml-auto text-right">
-          <div className="ts-label mb-1.5">You receive</div>
+          <div className="ts-label mb-1.5">你将获得</div>
           <div className="ts-mono text-[18px] font-semibold text-emerald-300">
             {formatCents(total)}
           </div>
@@ -377,10 +375,10 @@ function SellPanel({
         }`}
       >
         {offline
-          ? "Sign in to trade"
+          ? "登录后交易"
           : market.busy
-            ? "Working …"
-            : "Create sell order"}
+            ? "处理中…"
+            : "创建卖单"}
       </button>
       {!priceOk && (
         <p className="mt-1.5 text-[11px] text-amber-200/80">
@@ -406,17 +404,17 @@ function WholesaleRow({
   const onSell = async () => {
     const st = useGame.getState();
     if (!st.takeMaterials(id, amount)) {
-      toast("Not enough material in store.", "warn");
+      toast("仓库里的材料不够。", "warn");
       return;
     }
     const res = await market.sellWholesale(id, amount);
     if (!res.ok) {
       useGame.getState().addMaterials(id, amount);
-      toast(res.error ?? "The wholesaler rejected the sale.", "warn");
+      toast(res.error ?? "批发商拒绝了这笔出售。", "warn");
       return;
     }
     toast(
-      `Sold ${num(amount)} ${def.unit} ${def.name} for ${formatCents(total)}`,
+      `已出售 ${num(amount)} ${def.unit} ${def.name}，获得 ${formatCents(total)}`,
       "good",
     );
   };
@@ -427,7 +425,7 @@ function WholesaleRow({
       <div className="min-w-0 flex-1">
         <div className="truncate text-[13px] text-white/85">{def.name}</div>
         <div className="ts-mono text-[11px] text-white/40">
-          {num(amount)} {def.unit} in store
+          {num(amount)} {def.unit} 库存
         </div>
       </div>
       <span className="ts-mono text-[13px] text-emerald-300/85">
@@ -440,7 +438,7 @@ function WholesaleRow({
         className="rounded-lg bg-white/10 px-3 py-1.5 text-[12px] font-semibold transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-40"
       >
         {offline
-          ? "Sign in to trade"
+          ? "登录后交易"
           : `Sell to wholesaler @ ${formatCents(perUnit)}/${def.unit}`}
       </button>
     </li>

@@ -16,12 +16,11 @@ function SaveHint() {
   const lastSavedAt = useGame((st) => st.lastSavedAt);
   const text =
     lastSavedAt === 0
-      ? "Not saved yet."
-      : `Last saved at ${new Date(lastSavedAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}.`;
+      ? "尚未保存。"
+      : `上次保存于 ${new Date(lastSavedAt).toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}。`;
   return (
     <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-3 text-[12px] leading-relaxed text-white/60">
-      {text} Your progress is saved to the profile automatically every five
-      minutes{dirty ? " – there are unsaved changes." : "."}
+      {text} 你的进度每五分钟自动保存到资料{dirty ? "——有未保存的更改。" : "."}
     </div>
   );
 }
@@ -89,10 +88,10 @@ function Toggle({
 }
 
 const QUALITIES: Array<[QualityId, string]> = [
-  ["low", "Low"],
-  ["medium", "Medium"],
-  ["high", "High"],
-  ["ultra", "Ultra"],
+  ["low", "低"],
+  ["medium", "中"],
+  ["high", "高"],
+  ["ultra", "极高"],
 ];
 
 export function PauseSettings({
@@ -108,16 +107,16 @@ export function PauseSettings({
   return (
     <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/55 p-3">
       <div className="menu-panel scroll-thin max-h-[92vh] w-full max-w-md overflow-y-auto rounded-2xl p-5 text-white shadow-2xl">
-        <h2 className="mb-1 text-xl font-bold">Paused</h2>
+        <h2 className="mb-1 text-xl font-bold">已暂停</h2>
         <p className="mb-4 text-[12px] text-white/50">
-          The beach is waiting for you.
+          海滩在等你回来。
         </p>
 
         <div className="space-y-1 rounded-xl border border-white/10 bg-white/5 p-3">
           <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-white/45">
-            Graphics
+            画面
           </div>
-          <Row label="Quality">
+          <Row label="画质">
             <div className="flex gap-1">
               {QUALITIES.map(([id, label]) => (
                 <button
@@ -136,9 +135,9 @@ export function PauseSettings({
             </div>
           </Row>
           <p className="pb-1 text-[10px] text-white/40">
-            Quality only takes full effect after “Main menu → Resume shift”.
+            画质需在“主菜单 → 继续班次”后才完全生效。
           </p>
-          <Row label="Render resolution">
+          <Row label="渲染分辨率">
             <Slider
               value={s.renderScale}
               min={0.5}
@@ -148,10 +147,10 @@ export function PauseSettings({
               fmt={(v) => `${Math.round(v * 100)}%`}
             />
           </Row>
-          <Row label="Shadows">
+          <Row label="阴影">
             <Toggle value={s.shadows} onChange={(v) => up({ shadows: v })} />
           </Row>
-          <Row label="Field of view (FOV)">
+          <Row label="视野（FOV）">
             <Slider
               value={s.fov}
               min={60}
@@ -165,9 +164,9 @@ export function PauseSettings({
 
         <div className="mt-3 space-y-1 rounded-xl border border-white/10 bg-white/5 p-3">
           <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-white/45">
-            Controls
+            操作
           </div>
-          <Row label="Mouse sensitivity">
+          <Row label="鼠标灵敏度">
             <Slider
               value={s.sensitivity}
               min={0.3}
@@ -177,16 +176,16 @@ export function PauseSettings({
               fmt={(v) => v.toFixed(2)}
             />
           </Row>
-          <Row label="Invert Y axis">
+          <Row label="反转 Y 轴">
             <Toggle value={s.invertY} onChange={(v) => up({ invertY: v })} />
           </Row>
         </div>
 
         <div className="mt-3 space-y-1 rounded-xl border border-white/10 bg-white/5 p-3">
           <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-white/45">
-            Audio
+            音频
           </div>
-          <Row label="Master">
+          <Row label="主音量">
             <Slider
               value={s.volMaster}
               min={0}
@@ -196,7 +195,7 @@ export function PauseSettings({
               fmt={(v) => `${Math.round(v * 100)}%`}
             />
           </Row>
-          <Row label="Ambience">
+          <Row label="环境音">
             <Slider
               value={s.volAmbience}
               min={0}
@@ -206,7 +205,7 @@ export function PauseSettings({
               fmt={(v) => `${Math.round(v * 100)}%`}
             />
           </Row>
-          <Row label="Effects">
+          <Row label="音效">
             <Slider
               value={s.volSfx}
               min={0}
@@ -220,9 +219,9 @@ export function PauseSettings({
 
         <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-3">
           <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-white/45">
-            Game world
+            游戏世界
           </div>
-          <Row label="Tide washes up new trash">
+          <Row label="潮汐冲上新垃圾">
             <Toggle value={s.washUp} onChange={(v) => up({ washUp: v })} />
           </Row>
         </div>
@@ -232,9 +231,9 @@ export function PauseSettings({
             types.ts). */}
         <div className="mt-3 rounded-xl border border-amber-400/25 bg-amber-400/[0.06] p-3">
           <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-amber-200/70">
-            Testing
+            测试
           </div>
-          <Row label="Test mode – unlock everything">
+          <Row label="测试模式——解锁全部内容">
             <Toggle
               value={st.test !== null}
               onChange={() => st.toggleTestMode()}
@@ -255,7 +254,7 @@ export function PauseSettings({
             onClick={() => getGame()?.resume()}
             className="w-full rounded-xl bg-emerald-500/90 py-2.5 font-semibold text-emerald-950 transition hover:bg-emerald-400"
           >
-            Resume
+            继续
           </button>
           <button
             type="button"
@@ -267,14 +266,14 @@ export function PauseSettings({
                 : "cursor-not-allowed bg-white/5 text-white/35"
             }`}
           >
-            {cloudBusy ? "Saving …" : "Save to profile now"}
+            {cloudBusy ? "保存中…" : "立即保存到资料"}
           </button>
           <button
             type="button"
             onClick={onMainMenu}
             className="w-full rounded-xl bg-white/10 py-2.5 font-semibold text-white/85 transition hover:bg-white/20"
           >
-            Save and back to main menu
+            保存并返回主菜单
           </button>
         </div>
       </div>

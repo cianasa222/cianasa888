@@ -26,10 +26,10 @@ export interface CollectibleDef {
 }
 
 export const KIND_NAMES: Record<CollectibleKind, string> = {
-  fossil: "Fossils",
-  coin: "Old coins",
-  bottle: "Messages in bottles",
-  jewellery: "Jewellery",
+  fossil: "化石",
+  coin: "古钱币",
+  bottle: "漂流瓶信件",
+  jewellery: "珠宝",
 };
 
 export const COLLECTIBLE_KINDS: readonly CollectibleKind[] = [
@@ -44,43 +44,43 @@ export const COLLECTIBLES: CollectibleDef[] = [
   {
     id: "fossil_ammonite",
     kind: "fossil",
-    name: "Ribbed ammonite",
-    desc: "A Jurassic sea snail's spiral, ~180 million years old; the winter storms wash them out of the clay under the east cliffs.",
+    name: "肋纹菊石",
+    desc: "侏罗纪海螺的螺旋壳，约 1.8 亿年历史；冬季风暴把它们从东崖下的黏土中冲出来。",
     valueCents: 12000,
   },
   {
     id: "fossil_trilobite",
     kind: "fossil",
-    name: "Slate trilobite",
-    desc: "An Ordovician sea-floor crawler pressed into slate – older than fish, older than trees, older than insects.",
+    name: "板岩三叶虫",
+    desc: "奥陶纪海底爬行者，压进板岩之中——比鱼古老，比树古老，比昆虫古老。",
     valueCents: 9500,
   },
   {
     id: "fossil_shark_tooth",
     kind: "fossil",
-    name: "Megalodon tooth",
-    desc: "Serrated tooth of a giant Miocene shark; the enamel still holds its edge after twenty million years in the sand.",
+    name: "巨齿鲨牙齿",
+    desc: "中新世巨鲨的锯齿状牙齿；历经两千万年埋沙，牙釉质依然锋利。",
     valueCents: 34000,
   },
   {
     id: "fossil_urchin",
     kind: "fossil",
-    name: "Shepherd's crown",
-    desc: "A flint heart urchin from the chalk; downland folk kept them on the windowsill to turn the thunder away.",
+    name: "牧羊人王冠",
+    desc: "白垩层中的燧石心形海胆；丘陵地带的人们把它放在窗台上驱雷。",
     valueCents: 4500,
   },
   {
     id: "fossil_fern",
     kind: "fossil",
-    name: "Fern shale",
-    desc: "A Carboniferous fern frond in split shale – a leaf that last saw sunlight three hundred million years before grass existed.",
+    name: "蕨类页岩",
+    desc: "石炭纪蕨叶，藏于裂开的页岩中——这片叶子最后一次见到阳光，是在青草出现三亿年前。",
     valueCents: 6800,
   },
   {
     id: "fossil_amber",
     kind: "fossil",
-    name: "Baltic amber",
-    desc: "A knuckle of fossil resin with a midge caught inside; it drifted the whole North Sea to end up on this beach.",
+    name: "波罗的海琥珀",
+    desc: "一块化石树脂，里面困着一只小飞虫；它漂过整个北海，最终来到这片海滩。",
     valueCents: 39500,
   },
 
@@ -88,43 +88,43 @@ export const COLLECTIBLES: CollectibleDef[] = [
   {
     id: "coin_real",
     kind: "coin",
-    name: "Piece of eight",
-    desc: "A hammered silver eight-real piece, minted in Potosí and lost with some unlucky ship; salt has blacked the cross.",
+    name: "八里亚尔银币",
+    desc: "锤打而成的八里亚尔银币，铸于波托西，随某艘倒霉的船沉没；盐分已把十字熏黑。",
     valueCents: 9500,
   },
   {
     id: "coin_denarius",
     kind: "coin",
-    name: "Roman denarius",
-    desc: "A legionary's day wage in worn silver; two thousand years of thumbs have nearly kissed the emperor away.",
+    name: "罗马第纳里乌斯银币",
+    desc: "一名军团士兵一天的工钱，磨损的银币；两千年拇指的摩挲几乎把皇帝的头像吻没了。",
     valueCents: 18500,
   },
   {
     id: "coin_doubloon",
     kind: "coin",
-    name: "Gold doubloon",
-    desc: "A Spanish two-escudo piece. Gold does not tarnish – it shines exactly as it did the day the sea took it.",
+    name: "金达布隆",
+    desc: "西班牙双埃斯库多金币。黄金不会锈蚀——它闪耀如初，一如被大海夺走的那天。",
     valueCents: 58500,
   },
   {
     id: "coin_penny",
     kind: "coin",
-    name: "Hammered penny",
-    desc: "A medieval silver penny, clipped around the rim by someone with cold hands and no scruples.",
+    name: "锤打便士",
+    desc: "中世纪银便士，边缘被某个手冷又没良心的人剪过。",
     valueCents: 7500,
   },
   {
     id: "coin_sovereign",
     kind: "coin",
-    name: "Victoria sovereign",
-    desc: "A gold sovereign of 1887 – pocket money for an empire, dropped between the dunes on some long-forgotten Sunday walk.",
+    name: "维多利亚金镑",
+    desc: "1887 年的金镑——一个帝国的零花钱，在某个早已被遗忘的周日散步中掉进了沙丘之间。",
     valueCents: 42000,
   },
   {
     id: "coin_cash",
     kind: "coin",
-    name: "Chinese cash coin",
-    desc: "Cast bronze with a square hole, green with a century of verdigris; ballast spill from a tea clipper, most likely.",
+    name: "中国古钱",
+    desc: "方孔铸铜钱，百年铜绿；很可能是茶船压舱物中漏出来的。",
     valueCents: 2800,
   },
 
@@ -132,123 +132,123 @@ export const COLLECTIBLES: CollectibleDef[] = [
   {
     id: "bottle_castaway",
     kind: "bottle",
-    name: "The keeper's log",
-    desc: "A dark Victorian wine bottle crusted with barnacles; the last entry of a lighthouse log is still dry inside.",
+    name: "守塔人的日志",
+    desc: "维多利亚时代的深色酒瓶，覆满藤壶；里面灯塔日志的最后一篇依然干燥。",
     valueCents: 900,
     letter:
-      "Final entry, Pengarrow Head light, 14th of March, 1893.\n" +
-      "The Board has seen fit to retire both the light and its keeper, and so tonight I climbed the stair a last time and lit her for no ship at all – only for myself, and perhaps for the gulls.\n" +
-      "Thirty-one years I have kept this flame. I have counted nine wrecks, and pulled four men living from the water, and I remember each of their faces better than I remember my own.\n" +
-      "Whoever finds this: keep something burning. It need not be a lamp.\n" +
-      "— E. Tregarthen, Keeper",
+      "最后一篇，彭加罗角灯塔，1893 年 3 月 14 日。\n" +
+      "委员会决定让灯塔和守塔人一同退役，所以今晚我最后一次登上楼梯，为没有船只的海面点亮了她——只为我自己，或许也为海鸥。\n" +
+      "三十一年来，我守着这盏灯。我数过九起沉船，从水里救起过四个活人，他们每个人的脸，我记得比自己的脸还清楚。\n" +
+      "无论谁找到它：让某样东西一直燃烧着。不一定非得是灯。\n" +
+      "——E·特雷加森，守塔人",
   },
   {
     id: "bottle_wish",
     kind: "bottle",
-    name: "Poppy's wish",
-    desc: "A small pop bottle, corked with more hope than skill; the wish inside is written in orange crayon.",
+    name: "波比的愿望",
+    desc: "一个小汽水瓶，塞着比手艺更多的希望；里面的愿望是用橙色蜡笔写的。",
     valueCents: 350,
     letter:
-      "Dear Sea,\n" +
-      "My name is Poppy and I am seven and three quarters. Dad says if you post a wish into the sea it comes true slower than a birthday wish but BIGGER.\n" +
-      "My wish is that our cat Biscuit comes home. And if he is living with another family now then my wish is that they are kind and give him the crunchy food, not the wet kind, which he only pretends to like to be polite.\n" +
-      "If a pirate finds this, the wish still counts. That is the rule.\n" +
-      "Love, Poppy (age 7¾)",
+      "亲爱的大海：\n" +
+      "我叫波比，今年七岁零九个月。爸爸说，如果把愿望寄进大海，它实现得会比生日愿望慢，但更大。\n" +
+      "我的愿望是，我们的猫饼干能回家。如果它现在住在另一户人家，那就希望他们对它好一点，给它脆脆的猫粮，不要给湿粮——它只是出于礼貌才假装喜欢湿粮。\n" +
+      "如果是海盗捡到了这封信，愿望照样算数。这是规矩。\n" +
+      "爱你的，波比（七岁零九个月）",
   },
   {
     id: "bottle_capsule",
     kind: "bottle",
-    name: "Class 4B's capsule",
-    desc: "A 1980s lemonade bottle sealed with sticky tape; a message to the year 2000, delivered somewhat late.",
+    name: "四年 B 班的时间胶囊",
+    desc: "1980 年代的柠檬水瓶，用胶带封着；一封写给 2000 年的信，送达得有点晚。",
     valueCents: 420,
     letter:
-      "TIME CAPSULE – DO NOT OPEN UNTIL THE YEAR 2000!\n" +
-      "We are Class 4B of St Merrow's Junior School and today is the 12th of July 1985. Facts for the future: crisps cost 10p. Darren can do a wheelie for a whole minute. Our teacher Mrs Pascoe says that by the year 2000 cars will fly.\n" +
-      "So if you are reading this from your flying car, please drive it slowly past Darren's house. He will be about forty, and it will absolutely ruin him.\n" +
-      "Signed in best handwriting,\n" +
-      "Class 4B (and Susan, who wanted her own line)",
+      "时间胶囊——2000 年之前请勿打开！\n" +
+      "我们是圣梅罗小学四年 B 班，今天是 1985 年 7 月 12 日。留给未来的事实：薯片 10 便士一包。达伦能翘头骑行整整一分钟。我们的老师帕斯科夫人说，到 2000 年汽车都会飞。\n" +
+      "所以如果你正开着飞车读这封信，请慢慢开过达伦家门口。那时他大概四十岁，这绝对会让他气坏。\n" +
+      "以最工整的字迹签名，\n" +
+      "四年 B 班（还有苏珊，她想要自己的一行）",
   },
   {
     id: "bottle_apology",
     kind: "bottle",
-    name: "The unsent apology",
-    desc: "A brown chemist's bottle dripped with candle wax; it carried an apology further than its writer ever managed to.",
+    name: "未寄出的道歉",
+    desc: "棕色药瓶，滴满烛蜡；它把一句道歉带得比作者本人走得更远。",
     valueCents: 500,
     letter:
-      "Frank,\n" +
-      "I have started this letter more times than I can count, and burned every one of them, so this time I shall finish it and let the tide decide what I could not.\n" +
-      "You were right about the boat. I sold her because I was angry, and I was angry because Father left her to you and not to me, and none of it was worth twenty years of silence between us. She was only planks and paint, Frank. You are my brother.\n" +
-      "If this reaches any shore at all, let it be yours.\n" +
-      "— Wilf",
+      "弗兰克：\n" +
+      "这封信我写过无数次开头，每次都烧掉了，所以这次我要把它写完，让潮水替我决定我做不到的事。\n" +
+      "关于那条船，你是对的。我卖掉她是因为生气，而我生气是因为父亲把她留给了你而不是我，可这一切都不值得我们之间二十年的沉默。她不过是木板和油漆，弗兰克。你是我的兄弟。\n" +
+      "如果它能抵达任何一片海岸，但愿是你的。\n" +
+      "——威尔夫",
   },
   {
     id: "bottle_forecast",
     kind: "bottle",
-    name: "The skipper's glass",
-    desc: "A pale green flask with a rope collar; a fisherman's weather wisdom, still perfectly reliable.",
+    name: "船长的气压表",
+    desc: "淡绿色细颈瓶，系着绳圈；渔民的天气智慧，至今依然可靠。",
     valueCents: 380,
     letter:
-      "Notes for whoever fishes this ground after me.\n" +
-      "Glass falling fast and the gulls gone inland means it will blow hard from the south-west by morning, whatever the wireless says. Do not trust the calm off the point – she flatters you first, then she takes your gear.\n" +
-      "Mackerel came early this year. A seal follows the boat on Tuesdays, regular as rent, and he has earned his fish, so pay him.\n" +
-      "And if the glass drops while the cat sits with her back to the fire: stay home.\n" +
-      "— D. H., skipper of the Merry Alice",
+      "留给后来在这片水域打鱼的人。\n" +
+      "气压表飞速下降、海鸥飞往内陆，意味着到早晨西南风会大作，不管收音机怎么说。别相信岬角外的平静——它先奉承你，然后夺走你的渔具。\n" +
+      "今年鲭鱼来得早。每周二都有一只海豹跟着船，像交租一样准时，它已经挣到了它的鱼，所以给它。\n" +
+      "如果气压下降时猫正背对着火炉坐着：就待在家里。\n" +
+      "——D·H，快乐爱丽丝号船长",
   },
   {
     id: "bottle_coordinates",
     kind: "bottle",
-    name: "The standing appointment",
-    desc: "A cobalt blue bottle under a red wax seal; two coordinates and a promise with no expiry date.",
+    name: "恒久的约定",
+    desc: "钴蓝色瓶子，红蜡封口；两个坐标和一个没有期限的承诺。",
     valueCents: 750,
     letter:
-      "If you are not R., kindly put this back in the water. If you are R.:\n" +
-      "49° 30′ N, 7° 10′ W. The cove below the coastguard cottages, where the rock makes a chair for two people who sit close, where you laughed at my terrible rowing. The ninth of June, seven o'clock in the evening, nineteen sixty-two.\n" +
-      "I will be there on the ninth of June every year for as long as I have legs to climb down with.\n" +
-      "You said the sea loses nothing worth keeping. Prove it, and come.\n" +
-      "— T.",
+      "如果你不是 R.，请把它放回水里。如果你是 R.：\n" +
+      "北纬 49°30′，西经 7°10′。海岸警卫队小屋下面的小湾，那里的岩石像一把椅子，供两个依偎而坐的人坐，你曾笑话我糟糕的划船技术。六月九日，晚上七点，一九六二年。\n" +
+      "只要我的腿还能爬下去，每年六月九日我都会在那里。\n" +
+      "你说过，大海不会弄丢任何值得留住的东西。证明它，来吧。\n" +
+      "——T.",
   },
 
   // ------------------------------------------------------------ jewellery --
   {
     id: "jewel_ring",
     kind: "jewellery",
-    name: "Gold wedding band",
-    desc: "A plain 22-carat band engraved 'A · E · 1911' on the inside; slipped from a cold finger at the tideline.",
+    name: "金婚戒",
+    desc: "素面 22K 金戒，内侧刻着“A · E · 1911”；从一只冰冷的手指上滑落到潮水线。",
     valueCents: 24000,
   },
   {
     id: "jewel_signet",
     kind: "jewellery",
-    name: "Onyx signet ring",
-    desc: "A gentleman's gold signet with an onyx table, the crest worn to a whisper by three generations of handshakes.",
+    name: "缟玛瑙印章戒指",
+    desc: "绅士的金印章戒，镶着缟玛瑙台面，家徽经三代人的握手磨得几乎看不见了。",
     valueCents: 31000,
   },
   {
     id: "jewel_pearls",
     kind: "jewellery",
-    name: "Pearl necklace",
-    desc: "A graduated string of saltwater pearls on silk with a gold clasp; lost overboard from a pleasure steamer, the story goes.",
+    name: "珍珠项链",
+    desc: "一串渐变海水珍珠，丝线金扣；据说从一艘游船上掉进了海里。",
     valueCents: 78000,
   },
   {
     id: "jewel_bracelet",
     kind: "jewellery",
-    name: "Silver curb bracelet",
-    desc: "A Victorian curb-link bracelet tarnished storm-grey; the clasp still closes with a good firm click.",
+    name: "银链手镯",
+    desc: "维多利亚时代的扁链手镯，锈成了风暴灰；扣子合上时仍发出清脆的一声。",
     valueCents: 15500,
   },
   {
     id: "jewel_brooch",
     kind: "jewellery",
-    name: "Ship brooch",
-    desc: "A gilt brooch in the shape of a full-rigged ship with a garnet riding where the cargo would be; a sweetheart gift from a sailor.",
+    name: "帆船胸针",
+    desc: "镀金胸针，是一艘全装帆船的形状，石榴石嵌在货舱的位置；水手送给心上人的礼物。",
     valueCents: 12000,
   },
   {
     id: "jewel_watch",
     kind: "jewellery",
-    name: "Drowned pocket watch",
-    desc: "A corroded silver pocket watch, stopped at 7:38; the sea keeps whatever time it takes.",
+    name: "沉没的怀表",
+    desc: "腐蚀的银怀表，停在 7:38；大海收走时间，从不归还。",
     valueCents: 145000,
   },
 ];

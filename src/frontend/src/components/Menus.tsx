@@ -26,19 +26,19 @@ export interface MenusProps {
 }
 
 const TABS: Array<[TabId, string]> = [
-  ["upgrades", "Upgrades"],
-  ["missions", "Missions"],
-  ["inventory", "Inventory"],
-  ["market", "Market"],
-  ["collection", "Collection"],
-  ["stats", "Statistics"],
-  ["leaderboard", "Leaderboard"],
+  ["upgrades", "升级"],
+  ["missions", "任务"],
+  ["inventory", "背包"],
+  ["market", "市场"],
+  ["collection", "收藏"],
+  ["stats", "统计"],
+  ["leaderboard", "排行榜"],
 ];
 
 function fmtTime(s: number): string {
   const h = Math.floor(s / 3600);
   const m = Math.floor((s % 3600) / 60);
-  return h > 0 ? `${h} h ${m} min` : `${m} min`;
+  return h > 0 ? `${h} 小时 ${m} 分钟` : `${m} 分钟`;
 }
 
 function fmtDist(m: number): string {
@@ -73,17 +73,17 @@ export function Menus({
         <header className="shrink-0 border-b border-white/10 px-4 pt-3">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <div className="ts-label">Shift terminal</div>
+              <div className="ts-label">班次终端</div>
               <div className="ts-display truncate text-[22px] tracking-normal">
                 {st.playerName}
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <span className="ts-mono rounded-md bg-[rgba(242,160,7,0.15)] px-2 py-1 text-[12px] text-[#ffca70]">
-                Lv. {level}
+                {level} 级
               </span>
               <span className="ts-mono rounded-md bg-emerald-400/12 px-2 py-1 text-[12px] text-emerald-300">
-                {num(st.recyclePoints)} pts
+                {num(st.recyclePoints)} 积分
               </span>
               {balance !== null && (
                 <span className="ts-mono rounded-md bg-white/10 px-2 py-1 text-[12px] text-white/85">
@@ -95,7 +95,7 @@ export function Menus({
                 onClick={onClose}
                 className="rounded-lg bg-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide transition hover:bg-white/20"
               >
-                Close
+                关闭
               </button>
             </div>
           </div>
@@ -147,11 +147,11 @@ function MissionsTab() {
     <div className="space-y-3">
       <Panel className="p-4">
         <SectionHead
-          label="Contracts"
-          hint="Standing jobs from the depot office. Rewards are paid out automatically."
+          label="委托"
+          hint="仓库办公室发布的常驻任务，奖励自动发放。"
           right={
             <span className="ts-mono text-[13px] text-white/70">
-              {done} / {MISSIONS.length} done
+              {done} / {MISSIONS.length} 已完成
             </span>
           }
         />
@@ -175,7 +175,7 @@ function MissionsTab() {
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-[14px] font-semibold">{m.name}</span>
-                    {complete && <Chip tone="good">Done</Chip>}
+                    {complete && <Chip tone="good">已完成</Chip>}
                   </div>
                   <p className="mt-0.5 text-[12px] text-white/50">{m.desc}</p>
                 </div>
@@ -186,7 +186,7 @@ function MissionsTab() {
                     {num(prog)} / {num(m.target)}
                   </div>
                   <div className="text-[11px] text-white/40">
-                    +{m.rewardXp} XP · {m.rewardPoints} pts
+                    +{m.rewardXp} 经验 · {m.rewardPoints} 积分
                   </div>
                 </div>
               </div>
@@ -208,16 +208,16 @@ function MissionsTab() {
 function StatsTab() {
   const st = useGame();
   const rows: Array<[string, string]> = [
-    ["Collected", num(st.stats.collected)],
-    ["Disposed", num(st.stats.disposed)],
-    ["Recycled (station)", num(st.stats.recycled)],
-    ["Recycling points", num(st.recyclePoints)],
-    ["Fetched by the dog", num(st.stats.dogItems)],
-    ["From the drone", num(st.stats.droneItems)],
-    ["Jeep loads", num(st.stats.jeepLoads)],
-    ["Play time", fmtTime(st.stats.playSeconds)],
-    ["On foot", fmtDist(st.stats.distanceWalked)],
-    ["Driven", fmtDist(st.stats.distanceDriven)],
+    ["已收集", num(st.stats.collected)],
+    ["已处理", num(st.stats.disposed)],
+    ["已回收（回收站）", num(st.stats.recycled)],
+    ["回收积分", num(st.recyclePoints)],
+    ["狗狗拾回", num(st.stats.dogItems)],
+    ["无人机拾回", num(st.stats.droneItems)],
+    ["吉普车运载次数", num(st.stats.jeepLoads)],
+    ["游玩时间", fmtTime(st.stats.playSeconds)],
+    ["步行", fmtDist(st.stats.distanceWalked)],
+    ["驾驶", fmtDist(st.stats.distanceDriven)],
   ];
   const byCat = Object.entries(st.stats.byCategoryCollected);
 
@@ -232,9 +232,9 @@ function StatsTab() {
         ))}
       </div>
       <Panel className="p-4">
-        <SectionHead label="Collected by category" />
+        <SectionHead label="按类别统计" />
         {byCat.length === 0 ? (
-          <EmptyNote>Nothing collected yet.</EmptyNote>
+          <EmptyNote>尚未收集任何物品。</EmptyNote>
         ) : (
           <div className="flex flex-wrap gap-2 text-[12px]">
             {byCat.map(([k, v]) => (
@@ -266,11 +266,11 @@ function LeaderboardTab({
     <div className="space-y-3">
       <Panel className="p-4">
         <SectionHead
-          label="Top collectors"
+          label="顶尖收集者"
           hint={
             globalStats
-              ? `${num(Number(globalStats.players))} operators · ${num(Number(globalStats.totalDisposed))} items disposed of worldwide`
-              : "Worldwide ranking of all operators."
+              ? `${num(Number(globalStats.players))} 名操作员 · 全球共处理 ${num(Number(globalStats.totalDisposed))} 件物品`
+              : "全体操作员的全球排名。"
           }
           right={
             <button
@@ -279,15 +279,15 @@ function LeaderboardTab({
               disabled={busy}
               className="rounded-lg bg-white/10 px-3 py-1.5 text-[12px] transition hover:bg-white/20 disabled:opacity-40"
             >
-              {busy ? "Loading …" : "Refresh"}
+              {busy ? "加载中…" : "刷新"}
             </button>
           }
         />
         {leaderboard === null && (
-          <EmptyNote>No connection to the leaderboard.</EmptyNote>
+          <EmptyNote>无法连接排行榜。</EmptyNote>
         )}
         {leaderboard?.length === 0 && (
-          <EmptyNote>No entries yet – be the first!</EmptyNote>
+          <EmptyNote>暂无记录——来做第一个！</EmptyNote>
         )}
         {leaderboard && leaderboard.length > 0 && (
           <ol className="space-y-1.5">

@@ -14,7 +14,7 @@ export interface UpgradesTabProps {
 /** Thematic groups – anything unknown lands in the last group. */
 const GROUPS: Array<{ label: string; ids: readonly string[] }> = [
   {
-    label: "Field kit",
+    label: "野外装备",
     ids: [
       "bucketCap",
       "grabRange",
@@ -24,9 +24,9 @@ const GROUPS: Array<{ label: string; ids: readonly string[] }> = [
       "detectorTune",
     ],
   },
-  { label: "Jeep", ids: ["jeepCap", "jeepEngine", "jeepSusp"] },
-  { label: "Helpers", ids: ["dog", "dogSpeed", "drone", "droneSpeed"] },
-  { label: "Recycling station", ids: ["stationRate"] },
+  { label: "吉普车", ids: ["jeepCap", "jeepEngine", "jeepSusp"] },
+  { label: "帮手", ids: ["dog", "dogSpeed", "drone", "droneSpeed"] },
+  { label: "回收站", ids: ["stationRate"] },
 ];
 
 /** Upgrades that are either owned or not – no numeric value to show. */
@@ -40,7 +40,7 @@ function groupedUpgrades(): Array<{ label: string; items: UpgradeDef[] }> {
     return { label: g.label, items };
   }).filter((g) => g.items.length > 0);
   const rest = UPGRADES.filter((u) => !used.has(u.id));
-  if (rest.length > 0) out.push({ label: "More", items: rest });
+  if (rest.length > 0) out.push({ label: "更多", items: rest });
   return out;
 }
 
@@ -67,21 +67,21 @@ export function UpgradesTab({ balanceCents }: UpgradesTabProps) {
       <Panel className="p-4">
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
           <div>
-            <div className="ts-label">Operator level</div>
+            <div className="ts-label">操作员等级</div>
             <div className="ts-display mt-1 text-[42px] text-[var(--amber)]">
               {lv.level}
             </div>
           </div>
           <div className="flex flex-wrap items-end gap-x-7 gap-y-3">
             <div className="text-right">
-              <div className="ts-label">Recycling points</div>
+              <div className="ts-label">回收积分</div>
               <div className="ts-mono mt-1 text-[20px] font-semibold text-emerald-300">
                 {num(st.recyclePoints)}
               </div>
             </div>
             {balanceCents !== null && (
               <div className="text-right">
-                <div className="ts-label">Balance</div>
+                <div className="ts-label">余额</div>
                 <div className="ts-mono mt-1 text-[20px] font-semibold text-white">
                   {formatCents(balanceCents)}
                 </div>
@@ -103,7 +103,7 @@ export function UpgradesTab({ balanceCents }: UpgradesTabProps) {
             <span>
               {lv.needed > 0
                 ? `Level ${lv.level + 1} next`
-                : "Maximum level reached"}
+                : "已达最高等级"}
             </span>
           </div>
         </div>
@@ -180,12 +180,12 @@ function UpgradeCard({
           </p>
         </div>
         {maxed ? (
-          <Chip tone="good">Max</Chip>
+          <Chip tone="good">满级</Chip>
         ) : !levelOk ? (
-          <Chip tone="warn">Lv. {reqLevel}</Chip>
+          <Chip tone="warn">{reqLevel} 级</Chip>
         ) : (
           <Chip tone="plain">
-            Stage {stage}/{stages}
+            第 {stage}/{stages} 阶段
           </Chip>
         )}
       </div>
@@ -194,7 +194,7 @@ function UpgradeCard({
       <div className="ts-mono mt-2.5 text-[13px]">
         {toggle ? (
           <span className={stage >= 1 ? "text-emerald-300" : "text-white/40"}>
-            {stage >= 1 ? "Unlocked" : "Not unlocked yet"}
+            {stage >= 1 ? "已解锁" : "尚未解锁"}
           </span>
         ) : (
           <>
@@ -216,7 +216,7 @@ function UpgradeCard({
         <Pips total={stages} filled={stage} id={def.id} />
         {maxed ? (
           <span className="text-[12px] font-medium text-emerald-300/80">
-            Fully upgraded
+            已升满
           </span>
         ) : (
           <button
@@ -230,8 +230,8 @@ function UpgradeCard({
             }`}
           >
             {!levelOk
-              ? `Requires level ${reqLevel}`
-              : `${num(cost)} points${canAfford ? "" : ` · ${num(cost - points)} short`}`}
+              ? `需要等级 ${reqLevel}`
+              : `${num(cost)} 积分${canAfford ? "" : ` · 还差 ${num(cost - points)}`}`}
           </button>
         )}
       </div>

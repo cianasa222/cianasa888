@@ -53,12 +53,27 @@ function isUsable(identity: Identity | null): identity is Identity {
 export interface InternetIdentityContextValue {
   identity: Identity | null;
   isAuthenticated: boolean;
+  /** Guest session (local only, no backend). Null when not a guest. */
+  isGuest: boolean;
   /** true while the stored session state is still being loaded. */
   isInitializing: boolean;
   isLoggingIn: boolean;
   login: () => void;
+  /** Enter as a guest: local-only session, progress saved on this device. */
+  loginGuest: () => void;
   clear: () => void;
   loginError: string | null;
+}
+
+/** localStorage key for the guest session id. */
+export const GUEST_ID_KEY = "trash-guest-id";
+
+function readGuestId(): string | null {
+  try {
+    return localStorage.getItem(GUEST_ID_KEY);
+  } catch {
+    return null;
+  }
 }
 
 const Ctx = createContext<InternetIdentityContextValue | null>(null);
@@ -70,6 +85,7 @@ export function InternetIdentityProvider({
 }) {
   const clientRef = useRef<AuthClient | null>(null);
   const [identity, setIdentity] = useState<Identity | null>(null);
+  const [guestId, setGuestId] = useState<string | null>(readGuestId);
   const [phase, setPhase] = useState<
     "initializing" | "ready" | "signingIn" | "error"
   >("initializing");
@@ -116,7 +132,7 @@ export function InternetIdentityProvider({
   const login = useCallback(() => {
     const client = clientRef.current;
     if (!client) {
-      setLoginError("Sign-in is not ready yet. Please wait a moment.");
+      setLoginError("登录尚未就绪，请稍等。");
       setPhase("error");
       return;
     }
@@ -134,22 +150,41 @@ export function InternetIdentityProvider({
           // Anonymous principal after signIn: authentication failed silently
           // (skill, failure pattern no. 6).
           setIdentity(null);
-          setLoginError("The sign-in was not completed. Please try again.");
+          setLoginError("登录未完成，请重试。");
           setPhase("error");
         }
       })
       .catch((e: unknown) => {
         setIdentity(null);
         setLoginError(
-          e instanceof Error && e.message ? e.message : "Sign-in cancelled.",
+          e instanceof Error && e.message ? e.message : "登录已取消。",
         );
         setPhase("error");
       });
   }, []);
 
+  const loginGuest = useCallback(() => {
+    const id = `guest-${Math.random().toString(36).slice(2, 10)}${Math.random()
+      .toString(36)
+      .slice(2, 10)}`;
+    try {
+      localStorage.setItem(GUEST_ID_KEY, id);
+    } catch {
+      /* Storage unavailable – the guest session just won't survive reload */
+    }
+    setGuestId(id);
+    setLoginError(null);
+  }, []);
+
   const clear = useCallback(() => {
     const client = clientRef.current;
     setIdentity(null);
+    setGuestId(null);
+    try {
+      localStorage.removeItem(GUEST_ID_KEY);
+    } catch {
+      /* ignore */
+    }
     setPhase("ready");
     setLoginError(null);
     void client?.signOut().catch(() => {
@@ -160,14 +195,16 @@ export function InternetIdentityProvider({
   const value = useMemo<InternetIdentityContextValue>(
     () => ({
       identity,
-      isAuthenticated: isUsable(identity),
+      isAuthenticated: isUsable(identity) || guestId != null,
+      isGuest: guestId != null,
       isInitializing: phase === "initializing",
       isLoggingIn: phase === "signingIn",
       login,
+      loginGuest,
       clear,
       loginError: phase === "error" ? loginError : null,
     }),
-    [identity, phase, login, clear, loginError],
+    [identity, guestId, phase, login, loginGuest, clear, loginError],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

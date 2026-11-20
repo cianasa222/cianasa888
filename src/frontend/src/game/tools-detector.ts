@@ -86,13 +86,13 @@ const CURIOS: ReadonlyArray<{
   pts: number;
   xp: number;
 }> = [
-  { id: "curio_button", name: "Old brass button", pts: 18, xp: 24 },
-  { id: "curio_thimble", name: "Silver thimble", pts: 26, xp: 30 },
-  { id: "curio_shilling", name: "Worn shilling", pts: 32, xp: 36 },
-  { id: "curio_buckle", name: "Verdigris belt buckle", pts: 22, xp: 28 },
-  { id: "curio_key", name: "Rusted mortice key", pts: 20, xp: 26 },
-  { id: "curio_marble", name: "Sea-glass marble", pts: 16, xp: 22 },
-  { id: "curio_spoon", name: "Pewter spoon", pts: 24, xp: 28 },
+  { id: "curio_button", name: "旧黄铜纽扣", pts: 18, xp: 24 },
+  { id: "curio_thimble", name: "银顶针", pts: 26, xp: 30 },
+  { id: "curio_shilling", name: "磨损的先令", pts: 32, xp: 36 },
+  { id: "curio_buckle", name: "铜绿皮带扣", pts: 22, xp: 28 },
+  { id: "curio_key", name: "生锈的插芯钥匙", pts: 20, xp: 26 },
+  { id: "curio_marble", name: "海玻璃弹珠", pts: 16, xp: 22 },
+  { id: "curio_spoon", name: "锡勺", pts: 24, xp: 28 },
 ];
 const CURIO_BY_ID = Object.fromEntries(CURIOS.map((c) => [c.id, c]));
 
@@ -320,7 +320,7 @@ export class Detector {
     this.moundMat.color.set("#b3a184");
 
     this.act = {
-      prompt: "Dig here",
+      prompt: "在此挖掘",
       run: () => this.startDig(),
     };
   }
@@ -361,7 +361,7 @@ export class Detector {
       if (!this.introShown) {
         this.introShown = true;
         st.toast(
-          "Sweep the foreshore near the waterline – the beeps quicken and rise over a buried find. A solid tone means: press F to dig.",
+          "在水线附近的滩涂上扫一扫——靠近埋藏物时哔声会越来越快、越来越高。听到持续的长音就表示：按 F 挖掘。",
           "info",
         );
       }
@@ -477,7 +477,7 @@ export class Detector {
     if (!p || this.digSpawn) return;
     const st = useGame.getState();
     if (p.kind === "trash" && st.bucketCount >= st.bucketCapacity()) {
-      st.toast("Your bucket is full – the find stays put for now.", "warn");
+      st.toast("你的桶满了——发现物先留在原地。", "warn");
       return;
     }
     this.digSpawn = p;
@@ -494,17 +494,17 @@ export class Detector {
     if (p.kind === "trash") {
       const def = TRASH_BY_ID[p.typeId];
       if (!def || !st.pickup(p.typeId)) {
-        st.toast("Your bucket is full – the find stays put for now.", "warn");
+        st.toast("你的桶满了——发现物先留在原地。", "warn");
         return;
       }
       const bonus = CATEGORIES[def.category].value * DEEP_BONUS_MULT;
       st.addDeepBonus(bonus, DEEP_BONUS_XP);
-      st.float(`Deep find: ${def.name} +${bonus} pts`, "#ffd76a");
+      st.float(`深埋发现：${def.name} +${bonus} 积分`, "#ffd76a");
     } else {
       const c = CURIO_BY_ID[p.typeId] ?? CURIOS[0];
       st.addDeepBonus(c.pts, c.xp);
-      st.float(`✦ ${c.name} +${c.pts} pts`, "#ffd76a");
-      st.toast(`Deep find: ${c.name} (+${c.pts} pts)`, "good");
+      st.float(`✦ ${c.name} +${c.pts} 积分`, "#ffd76a");
+      st.toast(`深埋发现：${c.name}（+${c.pts} 积分）`, "good");
     }
     st.setBuriedTaken({ ...st.buriedTaken, [p.id]: this.dayClock });
     this.spawnHole(p.x, p.z);
